@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>خمنها | النسخة الاحترافية 3D (النهائية V4)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================
+           1. CSS VARIABLES (PREMIUM THEME)
+        ========================================== */
+        :root {
+            --bg-top: #1a1b2e;
+            --bg-bottom: #0f101a;
+            --text-main: #ffffff;
+            --text-muted: #8b8eab;
+            
+            --primary: #6366f1;
+            --primary-shadow: #4338ca;
+            --primary-glow: rgba(99, 102, 241, 0.6);
+            
+            --correct: #10b981;
+            --correct-shadow: #047857;
+            --present: #f59e0b;
+            --present-shadow: #b45309;
+            --absent: #3f3f5a;
+            --absent-shadow: #2a2a3d;
+            
+            --key-bg: #2d2e43;
+            --key-shadow: #1e1e2d;
+            
+            --shop-bg: #232436;
+            --shop-border: #383a59;
+            
+            --modal-bg: rgba(26, 27, 46, 0.95);
+        }
+
+        .light-theme {
+            --bg-top: #f3f4f6;
+            --bg-bottom: #e5e7eb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #3b82f6;
+            --primary-shadow: #1d4ed8;
+            --key-bg: #ffffff;
+            --key-shadow: #d1d5db;
+            --absent: #9ca3af;
+            --absent-shadow: #6b7280;
+            --shop-bg: #ffffff;
+            --shop-border: #e5e7eb;
+            --modal-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        /* ==========================================
+           2. BASE SETUP & ANIMATIONS
+        ========================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            color: var(--text-main);
+            height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        /* Floating Score Animation */
+        .floating-score {
+            position: absolute; font-size: 2.2rem; font-weight: 900; color: var(--correct);
+            text-shadow: 0 4px 15px rgba(16, 185, 129, 0.6); pointer-events: none; z-index: 200;
+            animation: floatScore 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes floatScore {
+            0% { opacity: 0; transform: translateY(10px) scale(0.5); }
+            20% { opacity: 1; transform: translateY(-10px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-70px) scale(1); }
+        }
+
+        /* ==========================================
+           3. 3D BUTTONS
+        ========================================== */
+        .btn-3d {
+            position: relative; display: inline-flex; align-items: center; justify-content: center;
+            border: none; border-radius: 16px; font-family: inherit; font-weight: 900;
+            cursor: pointer; transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-3d:active { transform: translateY(6px); }
+        
+        .btn-primary {
+            background: var(--primary); color: white; padding: 1.2rem 3rem; font-size: 1.5rem;
+            box-shadow: 0 6px 0 var(--primary-shadow), 0 10px 25px var(--primary-glow);
+            width: 85%; max-width: 350px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .btn-primary:active { box-shadow: 0 0px 0 var(--primary-shadow), 0 5px 10px var(--primary-glow); }
+
+        .btn-secondary {
+            background: var(--key-bg); color: var(--text-main); padding: 1rem 2rem; font-size: 1.2rem;
+            box-shadow: 0 6px 0 var(--key-shadow); border: 2px solid var(--shop-border);
+            width: 85%; max-width: 350px;
+        }
+        .btn-secondary:active { box-shadow: 0 0px 0 var(--key-shadow); }
+
+        /* ==========================================
+           4. MAIN MENU
+        ========================================== */
+        #main-menu {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle at center, var(--bg-top), var(--bg-bottom));
+            z-index: 100; transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .game-title {
+            font-size: 6.5rem; font-weight: 900; line-height: 1; margin-bottom: 2rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text; color: transparent;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+            animation: floatTitle 3s ease-in-out infinite;
+        }
+        @keyframes floatTitle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .stats-cards { display: flex; gap: 1.5rem; margin-bottom: 3rem; width: 90%; max-width: 400px; }
+        .stat-card {
+            flex: 1; background: var(--shop-bg); border: 2px solid var(--shop-border);
+            border-radius: 20px; padding: 1.5rem 0; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-bottom: 6px solid var(--shop-border);
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card h3 { font-size: 2.5rem; color: var(--primary); margin-bottom: 5px; text-shadow: 0 2px 10px var(--primary-glow); }
+        .stat-card p { font-size: 1rem; color: var(--text-muted); font-weight: 800; }
+
+        /* ==========================================
+           5. GAME UI (HEADER & SHOP)
+        ========================================== */
+        #game-view { display: none; flex-direction: column; height: 100dvh; }
+
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 1.5rem; background: var(--bg-top); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 20; border-bottom: 1px solid var(--shop-border); flex-shrink: 0;
+        }
+        
+        .points-badge {
+            position: relative; background: #27272a; border: 2px solid #fbbf24; color: #fbbf24;
+            padding: 0.6rem 1.2rem; border-radius: 15px; font-weight: 900; font-size: 1.3rem;
+            box-shadow: 0 5px 0 #b45309, 0 0 20px rgba(251, 191, 36, 0.2);
+        }
+
+        .shop-container {
+            display: flex; gap: 0.8rem; padding: 1rem; overflow-x: auto;
+            background: var(--bg-bottom); flex-shrink: 0; scrollbar-width: none;
+            border-bottom: 1px solid var(--shop-border); box-shadow: inset 0 -10px 20px rgba(0,0,0,0.2);
+        }
+        .shop-container::-webkit-scrollbar { display: none; }
+
+        .shop-item {
+            background: var(--shop-bg); border: 2px solid var(--shop-border); border-bottom-width: 6px;
+            border-radius: 16px; min-width: 90px; padding: 0.8rem 0.5rem;
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .shop-item:active { transform: translateY(4px); border-bottom-width: 2px; margin-top: 4px; background: var(--key-bg); }
+        .shop-item.locked { opacity: 0.4; filter: grayscale(1); pointer-events: none; }
+        
+        .shop-icon { font-size: 1.8rem; margin-bottom: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .shop-name { font-size: 0.8rem; font-weight: 800; color: var(--text-main); }
+        .shop-price { font-size: 0.9rem; font-weight: 900; color: #fbbf24; margin-top: 4px; }
+
+        /* ==========================================
+           6. 3D GAME BOARD
+        ========================================== */
+        .board-wrapper {
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            padding: 1rem; min-height: 0; overflow-y: auto; perspective: 1200px;
+        }
+
+        .board { display: grid; gap: 10px; margin: auto; }
+        .row { display: flex; gap: 10px; justify-content: center; }
+
+        .tile {
+            width: 65px; height: 65px; position: relative;
+            transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @media (max-width: 400px) { .tile { width: 55px; height: 55px; } .board{gap: 8px;} .row{gap:8px;} }
+
+        .tile-face {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2.2rem; font-weight: 900; border-radius: 14px;
+        }
+        
+        .tile-front {
+            background: var(--key-bg); border: 2px solid var(--shop-border);
+            border-bottom: 6px solid var(--key-shadow); color: var(--text-main);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .tile-back {
+            transform: rotateX(180deg); color: white; border: none;
+            border-bottom: 6px solid rgba(0,0,0,0.3);
+        }
+
+        /* Typing Pop Animation */
+        .tile.active .tile-front {
+            border-color: var(--primary); border-bottom-color: var(--primary-shadow);
+            transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .tile.flip { transform: rotateX(180deg); }
+        
+        .tile-back.correct { background: var(--correct); border-bottom-color: var(--correct-shadow); box-shadow: inset 0 0 15px rgba(0,0,0,0.2), 0 0 20px rgba(16, 185, 129, 0.3); }
+        .tile-back.present { background: var(--present); border-bottom-color: var(--present-shadow); }
+        .tile-back.absent { background: var(--absent); border-bottom-color: var(--absent-shadow); }
+        .tile-back.revealed { background: linear-gradient(135deg, var(--correct), #34d399); border-bottom-color: var(--correct-shadow); box-shadow: 0 0 25px rgba(16,185,129,0.5); }
+
+        /* ==========================================
+           7. MECHANICAL KEYBOARD
+        ========================================== */
+        .keyboard {
+            padding: 12px 6px; padding-bottom: env(safe-area-inset-bottom, 25px);
+            background: var(--bg-top); box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
+            border-top: 1px solid var(--shop-border); flex-shrink: 0;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+
+        .key-row { display: flex; justify-content: center; gap: 6px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+        .key {
+            flex: 1; height: 60px; min-width: 0;
+            background: var(--key-bg); color: var(--text-main);
+            border: 2px solid var(--shop-border); border-bottom: 6px solid var(--key-shadow);
+            border-radius: 12px; font-family: inherit; font-size: 1.4rem; font-weight: 800;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: transform 0.05s, border-width 0.05s, background 0.3s;
+        }
+
+        .key:active { transform: translateY(4px); border-bottom-width: 2px; }
+        .key.large { flex: 1.6; font-size: 1.1rem; background: var(--shop-bg); }
+        
+        .key.correct { background: var(--correct); color: white; border-color: var(--correct); border-bottom-color: var(--correct-shadow); }
+        .key.present { background: var(--present); color: white; border-color: var(--present); border-bottom-color: var(--present-shadow); }
+        .key.absent { background: var(--absent); color: rgba(255,255,255,0.3); border-color: var(--absent); border-bottom-color: var(--absent-shadow); opacity: 0.5; }
+        .key.hidden { opacity: 0; pointer-events: none; transform: scale(0.5); transition: 0.4s; }
+
+        /* ==========================================
+           8. MODALS & EFFECTS
+        ========================================== */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+
+        .modal {
+            background: var(--modal-bg); padding: 2.5rem; border-radius: 30px;
+            width: 90%; max-width: 420px; text-align: center;
+            border: 2px solid var(--shop-border); box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            transform: translateY(50px) scale(0.9); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .overlay.active { opacity: 1; display: flex; }
+        .overlay.active .modal { transform: translateY(0) scale(1); }
+
+        .modal h2 { font-size: 3rem; margin-bottom: 1rem; color: var(--text-main); text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .modal .word-reveal { font-size: 3.5rem; font-weight: 900; color: var(--primary); margin: 1rem 0; letter-spacing: 2px; text-shadow: 0 0 25px var(--primary-glow); }
+        .modal .hint-reveal { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 2rem; font-weight: 700;}
+
+        /* Toast */
+        .toast {
+            position: fixed; top: 120px; left: 50%; transform: translateX(-50%) translateY(-20px) scale(0.9);
+            background: var(--text-main); color: var(--bg-bottom);
+            padding: 1.2rem 2.5rem; border-radius: 20px; font-weight: 900; font-size: 1.2rem;
+            z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+
+        /* Combo Popup (Stage Win Combo) */
+        .combo-text {
+            position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            font-size: 4rem; font-weight: 900; color: white; z-index: 500; pointer-events: none;
+            text-shadow: 0 10px 25px rgba(0,0,0,0.6), 0 0 40px var(--present);
+            -webkit-text-stroke: 2px var(--bg-top); white-space: nowrap;
+        }
+        @keyframes blast {
+            0% { transform: translate(-50%, -10%) scale(0); opacity: 0; }
+            15% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+            85% { transform: translate(-50%, -55%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -80%) scale(0.5); opacity: 0; }
+        }
+
+        .shake { animation: shakeRow 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shakeRow { 10%, 90% { transform: translateX(-4px); } 20%, 80% { transform: translateX(6px); } 30%, 50%, 70% { transform: translateX(-10px); } 40%, 60% { transform: translateX(10px); } }
+        
+        .screen-shake { animation: sShake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes sShake { 10%, 90% { transform: translate3d(-5px, 0, 0); } 20%, 80% { transform: translate3d(8px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-12px, 0, 0); } 40%, 60% { transform: translate3d(12px, 0, 0); } }
+
+        .particle { position: absolute; pointer-events: none; border-radius: 50%; z-index: 1000; animation: explode 1.2s forwards cubic-bezier(0.1, 0.8, 0.3, 1); }
+        @keyframes explode { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         MAIN MENU
+    ========================================== -->
+    <div id="main-menu">
+        <div class="game-title">خمنها</div>
+        
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3 id="menu-points">0</h3>
+                <p>إجمالي النقاط</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="menu-streak">0</h3>
+                <p>سلسلة المراحل</p>
+            </div>
+        </div>
+
+        <button class="btn-3d btn-primary" style="margin-bottom: 1.5rem;" onclick="startGame()">ابدأ التحدي 🔥</button>
+        <button class="btn-3d btn-secondary" onclick="openSettings()">الإعدادات ⚙️</button>
+    </div>
+
+    <!-- ==========================================
+         GAME VIEW
+    ========================================== -->
+    <div id="game-view">
+        
+        <div class="header">
+            <button class="btn-3d btn-secondary" style="padding: 0.5rem 1rem; font-size: 1.2rem; width: auto;" onclick="quitGame()">↩</button>
+            <div class="points-badge" id="points-badge-ui"><span id="game-points">0</span> 🌟</div>
+        </div>
+
+        <!-- Shop Pill Menu -->
+        <div class="shop-container" id="shop">
+            <div class="shop-item" onclick="buyItem('hint', 25)" id="shop-hint">
+                <div class="shop-icon">💡</div>
+                <div class="shop-name">تلميح</div>
+                <div class="shop-price">25 🌟</div>
+            </div>
+            <div class="shop-item" onclick="buyItem('reveal', 35)" id="shop-reveal">
+                <div class="shop-icon">🎯</div>
+                <div class="shop-name">كشف حرف</div>
+                <div class="shop-price">35 🌟</div>
+            </div>
+            <div class="shop-item" onclick="buyItem('extra', 50)" id="shop-extra">
+                <div class="shop-icon">➕</div>
+                <div class="shop-name">محاولة</div>
+                <div class="shop-price">50 🌟</div>
+            </div>
+            <div class="shop-item" onclick="buyItem('remove', 40)" id="shop-remove">
+                <div class="shop-icon">🧹</div>
+                <div class="shop-name">حذف خطأ</div>
+                <div class="shop-price">40 🌟</div>
+            </div>
+        </div>
+
+        <!-- 3D Board -->
+        <div class="board-wrapper" id="board-container">
+            <div class="board" id="board"></div>
+            <div id="combo-display" class="combo-text"></div>
+        </div>
+
+        <!-- Mechanical Keyboard -->
+        <div class="keyboard" id="keyboard"></div>
+    </div>
+
+    <!-- ==========================================
+         END GAME MODAL
+    ========================================== -->
+    <div class="overlay" id="end-overlay">
+        <div class="modal">
+            <h2 id="end-title">أسطوري!</h2>
+            <div class="word-reveal" id="end-word">الكلمة</div>
+            <div class="hint-reveal" id="end-hint">التلميح</div>
+            
+            <div class="stats-cards" style="width: 100%; margin-bottom: 2rem;">
+                <div class="stat-card" style="border-bottom-color: var(--correct-shadow);">
+                    <h3 id="end-earned" style="color: var(--correct);">+0</h3>
+                    <p>النقاط المكتسبة</p>
+                </div>
+                <div class="stat-card" style="border-bottom-color: var(--present-shadow);">
+                    <h3 id="end-combo" style="color: var(--present);">0</h3>
+                    <p>مراحل متتالية</p>
+                </div>
+            </div>
+            
+            <button class="btn-3d btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="startGame()">المرحلة التالية</button>
+            <button class="btn-3d btn-secondary" style="width: 100%;" onclick="quitGame()">القائمة الرئيسية</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         SETTINGS MODAL
+    ========================================== -->
+    <div class="overlay" id="settings-overlay">
+        <div class="modal">
+            <h2>الإعدادات</h2>
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;">
+                <button class="btn-3d btn-secondary" style="width: 100%;" onclick="toggleTheme()" id="btn-theme">🌙 المظهر (داكن)</button>
+                <button class="btn-3d btn-secondary" style="width: 100%;" onclick="toggleSound()" id="btn-sound">🔊 الصوت (شغال)</button>
+                <button class="btn-3d btn-secondary" style="width: 100%; color: #ef4444; border-color: #ef4444;" onclick="resetStats()">⚠️ مسح البيانات</button>
+            </div>
+            <button class="btn-3d btn-primary" style="width: 100%;" onclick="closeSettings()">حفظ وإغلاق</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">رسالة تنبيه</div>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC
+    ========================================== -->
+    <script>
+        /* --- Database (Massive Expansion - 300+ Words) --- */
+        const wordDatabase = [
+            // التقنية
+            {w:"حاسوب", h:"جهاز إلكتروني"},{w:"هاتف", h:"للاتصال"},{w:"إنترنت", h:"شبكة عالمية"},{w:"شاشة", h:"للعرض"},{w:"لوحة", h:"مفاتيح"},{w:"خادم", h:"مزود شبكة"},{w:"متصفح", h:"لتصفح الويب"},{w:"تطبيق", h:"برنامج وظيفي"},{w:"برمجة", h:"كتابة أوامر"},{w:"موقع", h:"عنوان رقمي"},{w:"شبكة", h:"اتصال أجهزة"},{w:"بيانات", h:"معلومات"},{w:"ذاكرة", h:"للتخزين"},{w:"معالج", h:"عقل الجهاز"},{w:"بريد", h:"رسائل رقمية"},{w:"تشفير", h:"حماية أمنية"},{w:"رابط", h:"عنوان إنترنت"},{w:"سحابة", h:"تخزين افتراضي"},{w:"روبوت", h:"آلة مبرمجة"},{w:"طابعة", h:"ورقية"},{w:"بطارية", h:"مزود طاقة"},
+            // الطبيعة والطقس
+            {w:"شجرة", h:"نبات ضخم"},{w:"قمر", h:"جرم ليلي"},{w:"شمس", h:"نجم مضيء"},{w:"جبل", h:"تضاريس مرتفعة"},{w:"بحر", h:"مسطح مالح"},{w:"محيط", h:"مياه هائلة"},{w:"نهر", h:"مجرى عذب"},{w:"غابة", h:"أشجار كثيفة"},{w:"صحراء", h:"منطقة جافة"},{w:"سماء", h:"فضاء علوي"},{w:"مطر", h:"هطول مائي"},{w:"ثلج", h:"ماء متجمد"},{w:"غيمة", h:"بخار متكثف"},{w:"برق", h:"وميض كهربائي"},{w:"رعد", h:"صوت العاصفة"},{w:"عاصفة", h:"رياح هوجاء"},{w:"زلزال", h:"هزة أرضية"},{w:"بركان", h:"حمم نارية"},{w:"نبات", h:"كائن ينمو"},{w:"زهرة", h:"نبتة ملونة"},{w:"تراب", h:"أرضية"},
+            // حيوانات
+            {w:"أسد", h:"ملك الغابة"},{w:"نمر", h:"مخطط"},{w:"فيل", h:"ضخم جداً"},{w:"زرافة", h:"عنق طويل"},{w:"قرد", h:"متسلق"},{w:"حصان", h:"للركوب"},{w:"حمار", h:"للحمل"},{w:"كلب", h:"وفي"},{w:"قطة", h:"أليف"},{w:"طائر", h:"يطير"},{w:"تمساح", h:"زاحف برمائي"},{w:"ثعبان", h:"زاحف سام"},{w:"غزال", h:"رشيق"},{w:"ذئب", h:"حيوان مفترس"},{w:"ثعلب", h:"ماكر"},{w:"دب", h:"ينام شتاءً"},{w:"خروف", h:"مصدر صوف"},{w:"بقرة", h:"مصدر حليب"},{w:"أرنب", h:"سريع القفز"},{w:"فأر", h:"قارض"},{w:"نسر", h:"طائر جارح"},{w:"صقر", h:"طائر سريع"},{w:"بومة", h:"طائر ليلي"},{w:"نحلة", h:"حشرة منتجة"},{w:"نملة", h:"حشرة مجتهدة"},
+            // أطعمة وأشربة
+            {w:"خبز", h:"من العجين"},{w:"حليب", h:"سائل مغذي"},{w:"بيض", h:"من الدواجن"},{w:"جبنة", h:"مشتقات الألبان"},{w:"لحم", h:"بروتين حيواني"},{w:"دجاج", h:"طائر يؤكل"},{w:"سمك", h:"طعام بحري"},{w:"أرز", h:"حبوب بيضاء"},{w:"تفاح", h:"فاكهة"},{w:"برتقال", h:"فاكهة حمضية"},{w:"موز", h:"فاكهة صفراء"},{w:"عنب", h:"فاكهة صيفية"},{w:"بطيخ", h:"فاكهة كبيرة"},{w:"تمر", h:"من النخيل"},{w:"زيتون", h:"يستخرج منه زيت"},{w:"بصل", h:"خضار لاذع"},{w:"ثوم", h:"رائحة قوية"},{w:"طماطم", h:"خضار أحمر"},{w:"خيار", h:"خضار أخضر"},{w:"بطاطا", h:"خضار نشوي"},{w:"فلفل", h:"بهار حار"},{w:"سكر", h:"محلي"},{w:"ملح", h:"متبل"},{w:"قهوة", h:"مشروب منبه"},{w:"شاي", h:"مشروب ساخن"},{w:"عصير", h:"مشروب فواكه"},{w:"ماء", h:"سر الحياة"},{w:"حلوى", h:"طعام سكري"},{w:"عسل", h:"رحيق النحل"},
+            // مهن ووظائف
+            {w:"طبيب", h:"يعالج المرضى"},{w:"مهندس", h:"يصمم"},{w:"معلم", h:"يربي الأجيال"},{w:"طالب", h:"يتعلم"},{w:"مدير", h:"يشرف"},{w:"عامل", h:"يعمل بيده"},{w:"فلاح", h:"يزرع الأرض"},{w:"شرطي", h:"يحفظ الأمن"},{w:"جندي", h:"يحمي الوطن"},{w:"طيار", h:"يقود طائرة"},{w:"قاضي", h:"يحكم بالعدل"},{w:"محامي", h:"يدافع عن الحق"},{w:"كاتب", h:"يؤلف"},{w:"شاعر", h:"يكتب القصائد"},{w:"رسام", h:"يبدع بالفرشاة"},{w:"مغني", h:"يؤدي بصوته"},{w:"ممثل", h:"يؤدي أدواراً"},{w:"طباخ", h:"يعد الطعام"},{w:"خباز", h:"يصنع الخبز"},{w:"حلاق", h:"يعتني بالشعر"},{w:"نجار", h:"يصنع الأثاث"},{w:"حداد", h:"يشكل المعادن"},{w:"خياط", h:"يفصل الملابس"},{w:"سباك", h:"يصلح الأنابيب"},{w:"محاسب", h:"مدير مالي"},{w:"سائق", h:"يقود سيارة"},{w:"صحفي", h:"ينقل الأخبار"},
+            // أدوات مدرسية ومكتبية
+            {w:"قلم", h:"للكتابة"},{w:"كتاب", h:"للقراءة"},{w:"دفتر", h:"ورق مسطر"},{w:"مسطرة", h:"للقياس"},{w:"ممحاة", h:"لإزالة الرصاص"},{w:"سبورة", h:"للكتابة عليها"},{w:"حقيبة", h:"لحمل الأغراض"},{w:"ورقة", h:"للكتابة"},{w:"مقص", h:"للقص"},{w:"صمغ", h:"للصق"},
+            // ملابس وأزياء
+            {w:"قميص", h:"لباس علوي"},{w:"بنطال", h:"لباس سفلي"},{w:"حذاء", h:"للقدمين"},{w:"قبعة", h:"غطاء للرأس"},{w:"معطف", h:"لباس شتوي"},{w:"جورب", h:"تحت الحذاء"},{w:"سترة", h:"لباس خفيف"},{w:"فستان", h:"لباس نسائي"},{w:"وشاح", h:"للعنق"},{w:"حزام", h:"للخصر"},{w:"قفاز", h:"لليدين"},{w:"نظارة", h:"للعينين"},{w:"خاتم", h:"للإصبع"},{w:"عقد", h:"للزينة"},
+            // ألوان
+            {w:"أحمر", h:"لون الدم"},{w:"أصفر", h:"لون الشمس"},{w:"أخضر", h:"لون العشب"},{w:"أزرق", h:"لون السماء"},{w:"أسود", h:"لون الليل"},{w:"أبيض", h:"لون الثلج"},{w:"رمادي", h:"لون الدخان"},{w:"بني", h:"لون الخشب"},
+            // أدوات المطبخ والمنزل
+            {w:"ملعقة", h:"أداة للأكل"},{w:"شوكة", h:"أداة مسننة"},{w:"سكين", h:"أداة للتقطيع"},{w:"صحن", h:"وعاء للطعام"},{w:"كوب", h:"وعاء للشرب"},{w:"إبريق", h:"لصب السوائل"},{w:"مقلاة", h:"للقلي"},{w:"سرير", h:"للنوم"},{w:"طاولة", h:"للجلوس حولها"},{w:"كرسي", h:"للجلوس"},{w:"خزانة", h:"لحفظ الأشياء"},{w:"نافذة", h:"للتهوية"},{w:"باب", h:"مدخل"},{w:"جدار", h:"حائط"},{w:"سقف", h:"الغطاء العلوي"},{w:"سجادة", h:"تفرش على الأرض"},{w:"مصباح", h:"للإنارة"},
+            // العائلة والمجتمع
+            {w:"عائلة", h:"الأسرة"},{w:"رجل", h:"ذكر بالغ"},{w:"امرأة", h:"أنثى بالغة"},{w:"طفل", h:"صغير في السن"},{w:"أخ", h:"شقيق"},{w:"أخت", h:"شقيقة"},{w:"جد", h:"والد الأب أو الأم"},{w:"جدة", h:"والدة الأب أو الأم"},{w:"عم", h:"أخو الأب"},{w:"عمة", h:"أخت الأب"},{w:"خال", h:"أخو الأم"},{w:"خالة", h:"أخت الأم"},{w:"صديق", h:"رفيق"},{w:"جار", h:"يسكن بقربك"},
+            // أجزاء الجسم
+            {w:"رأس", h:"أعلى الجسم"},{w:"عين", h:"حاسة البصر"},{w:"أذن", h:"حاسة السمع"},{w:"أنف", h:"حاسة الشم"},{w:"فم", h:"للكلام والأكل"},{w:"وجه", h:"مقدمة الرأس"},{w:"شعر", h:"يغطي الرأس"},{w:"عنق", h:"يربط الرأس بالجسم"},{w:"يد", h:"طرف علوي"},{w:"قدم", h:"طرف سفلي"},{w:"قلب", h:"عضو نابض"},{w:"دم", h:"سائل أحمر"},{w:"عظم", h:"هيكل صلب"},{w:"عضلة", h:"للحركة"},
+            // مشاعر وحالات
+            {w:"فرح", h:"سعادة"},{w:"حزن", h:"أسى"},{w:"غضب", h:"انفعال شديد"},{w:"خوف", h:"ذعر"},{w:"حب", h:"عاطفة قوية"},{w:"كره", h:"مقت"},{w:"أمل", h:"تفاؤل"},{w:"يأس", h:"فقدان الأمل"},{w:"سلام", h:"طمأنينة"},{w:"حرب", h:"صراع مسلح"},
+            // فضاء وعلوم
+            {w:"فضاء", h:"الكون الواسع"},{w:"كوكب", h:"جرم سماوي"},{w:"نجم", h:"جرم مضيء"},{w:"مجرة", h:"تجمع نجوم"},{w:"صاروخ", h:"مركبة فضائية"},{w:"نيزك", h:"صخرة فضائية"},{w:"مذنب", h:"جرم ذو ذيل"},{w:"رائد", h:"مستكشف الفضاء"},{w:"علم", h:"معرفة"},
+            // رياضة وحركة
+            {w:"رياضة", h:"نشاط بدني"},{w:"كرة", h:"جسم دائري للعب"},{w:"ملعب", h:"مكان المباراة"},{w:"هدف", h:"نقطة فوز"},{w:"سباحة", h:"حركة في الماء"},{w:"ركض", h:"جري سريع"},{w:"قفز", h:"وثب"},
+            // وسائل النقل
+            {w:"سيارة", h:"مركبة بأربع عجلات"},{w:"قطار", h:"على السكة"},{w:"طائرة", h:"في الجو"},{w:"سفينة", h:"في البحر"},{w:"قارب", h:"مركبة مائية صغيرة"},{w:"دراجة", h:"بعجلتين"},{w:"حافلة", h:"نقل جماعي"},{w:"شاحنة", h:"لنقل البضائع"}
+        ];
+
+        /* --- Game State --- */
+        // تحديث متغير التخزين لعدم تداخل البيانات السابقة
+        let stats = JSON.parse(localStorage.getItem('khamenha_pro_final_v4')) || { points: 0, streak: 0, wins: 0 };
+        let settings = JSON.parse(localStorage.getItem('khamenha_set_final_v4')) || { sound: true, dark: true };
+        
+        let targetWord = ""; let hint = "";
+        let currentGuess = []; let currentRow = 0; let maxAttempts = 5;
+        let gameActive = false; let locked = []; 
+        let discoveredPositions = []; 
+
+        /* --- Synthesizer Audio --- */
+        const ACtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        function playSfx(type) {
+            if (!settings.sound) return;
+            try {
+                if(!audioCtx) audioCtx = new ACtx();
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                const t = audioCtx.currentTime;
+
+                if (type === 'tap') { 
+                    osc.frequency.setValueAtTime(500, t); osc.type = 'sine'; 
+                    gain.gain.setValueAtTime(0.1, t); gain.gain.exponentialRampToValueAtTime(0.01, t+0.05); 
+                    osc.start(t); osc.stop(t+0.05); 
+                } else if (type === 'err') {
+                    osc.frequency.setValueAtTime(120, t); osc.type = 'sawtooth'; 
+                    gain.gain.setValueAtTime(0.15, t); gain.gain.linearRampToValueAtTime(0, t+0.2); 
+                    osc.start(t); osc.stop(t+0.2); 
+                } else if (type === 'flip') {
+                    osc.frequency.setValueAtTime(400, t); osc.frequency.exponentialRampToValueAtTime(900, t+0.1); osc.type = 'triangle'; 
+                    gain.gain.setValueAtTime(0.05, t); gain.gain.linearRampToValueAtTime(0, t+0.1); 
+                    osc.start(t); osc.stop(t+0.1); 
+                } else if (type === 'win') {
+                    osc.frequency.setValueAtTime(400, t); osc.frequency.setValueAtTime(600, t+0.1); osc.frequency.setValueAtTime(800, t+0.2); osc.type = 'square'; 
+                    gain.gain.setValueAtTime(0.1, t); gain.gain.linearRampToValueAtTime(0, t+0.8); 
+                    osc.start(t); osc.stop(t+0.8); 
+                } else if (type === 'lose') {
+                    osc.frequency.setValueAtTime(300, t); osc.frequency.linearRampToValueAtTime(100, t+0.5); osc.type = 'sawtooth'; 
+                    gain.gain.setValueAtTime(0.15, t); gain.gain.linearRampToValueAtTime(0, t+0.5); 
+                    osc.start(t); osc.stop(t+0.5); 
+                } else if (type === 'coin') {
+                    osc.frequency.setValueAtTime(1200, t); osc.frequency.setValueAtTime(1800, t+0.1); osc.type = 'sine'; 
+                    gain.gain.setValueAtTime(0.1, t); gain.gain.linearRampToValueAtTime(0, t+0.3); 
+                    osc.start(t); osc.stop(t+0.3); 
+                }
+            } catch(e) {}
+        }
+
+        /* --- Init --- */
+        function init() {
+            updateMenu();
+            applyTheme();
+            buildKeyboard();
+            
+            document.querySelectorAll('.overlay').forEach(el => {
+                el.addEventListener('click', e => { if(e.target===el && el.id==='settings-overlay') closeSettings(); });
+            });
+        }
+
+        function updateMenu() {
+            document.getElementById('menu-points').innerText = stats.points;
+            document.getElementById('menu-streak').innerText = stats.streak;
+            document.getElementById('game-points').innerText = stats.points;
+        }
+        function saveStats() { localStorage.setItem('khamenha_pro_final_v4', JSON.stringify(stats)); updateMenu(); }
+
+        /* --- Core Game Flow --- */
+        function startGame() {
+            document.getElementById('main-menu').style.opacity = '0';
+            document.getElementById('main-menu').style.transform = 'scale(1.1)';
+            document.getElementById('main-menu').style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                let r = wordDatabase[Math.floor(Math.random() * wordDatabase.length)];
+                targetWord = r.w; hint = r.h;
+                
+                currentGuess = []; currentRow = 0; maxAttempts = 5;
+                locked = []; discoveredPositions = []; gameActive = true;
+                
+                resetKb(); buildBoard(); updateShop();
+                
+                document.getElementById('game-view').style.display = 'flex';
+                document.getElementById('end-overlay').classList.remove('active');
+            }, 400);
+        }
+
+        function quitGame() {
+            document.getElementById('game-view').style.display = 'none';
+            document.getElementById('main-menu').style.opacity = '1';
+            document.getElementById('main-menu').style.transform = 'scale(1)';
+            document.getElementById('main-menu').style.pointerEvents = 'auto';
+            gameActive = false;
+        }
+
+        /* --- Board & Keyboard UI --- */
+        function buildBoard() {
+            const b = document.getElementById('board'); b.innerHTML = '';
+            for(let i=0; i<maxAttempts; i++){
+                let r = document.createElement('div'); r.className = 'row'; r.id = `row-${i}`;
+                for(let j=0; j<targetWord.length; j++){
+                    r.innerHTML += `
+                        <div class="tile" id="tile-${i}-${j}">
+                            <div class="tile-face tile-front"></div>
+                            <div class="tile-face tile-back"></div>
+                        </div>`;
+                }
+                b.appendChild(r);
+            }
+        }
+
+        function buildKeyboard() {
+            const kb = document.getElementById('keyboard'); kb.innerHTML = '';
+            const layout = [
+                ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
+                ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
+                ['ئ','ء','ؤ','ر','ى','ة','و','ز','ظ'],
+                ['ENTER', 'ذ', 'DEL']
+            ];
+            layout.forEach(row => {
+                let r = document.createElement('div'); r.className = 'key-row';
+                row.forEach(k => {
+                    let btn = document.createElement('button'); btn.className = 'key';
+                    if(k==='ENTER'){ btn.innerText='إدخال'; btn.classList.add('large'); btn.onclick=submit; }
+                    else if(k==='DEL'){ btn.innerHTML='&#9003;'; btn.classList.add('large'); btn.onclick=del; }
+                    else { btn.innerText=k; btn.id=`key-${k}`; btn.onclick=()=>add(k); }
+                    r.appendChild(btn);
+                });
+                kb.appendChild(r);
+            });
+        }
+        function resetKb() {
+            document.querySelectorAll('.key').forEach(k => {
+                k.className = 'key'; 
+                if(k.innerText==='إدخال' || k.innerHTML==='⌫' || k.innerHTML==='&#9003;') k.classList.add('large');
+            });
+        }
+
+        /* --- Typing --- */
+        function add(l) {
+            if(!gameActive || currentGuess.length >= targetWord.length) return;
+            let idx = currentGuess.length;
+            while(locked.includes(idx)) { currentGuess.push(targetWord[idx]); idx++; }
+            if(currentGuess.length < targetWord.length) {
+                currentGuess.push(l); updateRow(); playSfx('tap');
+            }
+        }
+        function del() {
+            if(!gameActive || currentGuess.length===0) return;
+            let idx = currentGuess.length - 1;
+            while(locked.includes(idx) && idx>=0) idx--;
+            if(idx>=0) { currentGuess.splice(idx); updateRow(); playSfx('tap'); }
+        }
+        function updateRow() {
+            let tiles = document.getElementById(`row-${currentRow}`).querySelectorAll('.tile');
+            tiles.forEach((t, i) => {
+                if(!locked.includes(i)){
+                    t.querySelector('.tile-front').innerText = currentGuess[i] || '';
+                    if(currentGuess[i]) t.classList.add('active'); else t.classList.remove('active');
+                }
+            });
+        }
+
+        /* --- Engine & Points Logic --- */
+        function submit() {
+            if(!gameActive) return;
+            if(currentGuess.length !== targetWord.length) { 
+                toast("الكلمة ناقصة!"); 
+                let rw = document.getElementById(`row-${currentRow}`);
+                rw.classList.remove('shake'); void rw.offsetWidth; rw.classList.add('shake');
+                playSfx('err'); return; 
+            }
+            check(currentGuess.join(''));
+        }
+
+        function check(g) {
+            gameActive = false;
+            let tiles = document.getElementById(`row-${currentRow}`).querySelectorAll('.tile');
+            let tArr = targetWord.split(''); let res = Array(targetWord.length).fill('absent');
+            
+            let ptsThisTurn = 0;
+
+            // حساب الحروف الخضراء
+            for(let i=0; i<targetWord.length; i++) {
+                if(g[i]===targetWord[i]) { 
+                    res[i]='correct'; 
+                    tArr[i]=null; 
+                    
+                    // مكافأة الحرف الجديد (مخفضة لنقطة واحدة فقط) لزيادة الصعوبة
+                    if(!locked.includes(i) && !discoveredPositions.includes(i)) { 
+                        ptsThisTurn += 1; 
+                        discoveredPositions.push(i); 
+                    }
+                }
+            }
+            // حساب الحروف الصفراء
+            for(let i=0; i<targetWord.length; i++) {
+                if(res[i]==='absent' && tArr.includes(g[i])) { res[i]='present'; tArr[tArr.indexOf(g[i])]=null; }
+            }
+
+            tiles.forEach((t, i) => {
+                setTimeout(() => {
+                    t.querySelector('.tile-back').innerText = g[i];
+                    t.querySelector('.tile-back').classList.add(res[i]);
+                    t.classList.add('flip'); playSfx('flip');
+                    
+                    let k = document.getElementById(`key-${g[i]}`);
+                    if(k) {
+                        if(res[i]==='correct') { k.classList.remove('present','absent'); k.classList.add('correct'); }
+                        else if(res[i]==='present' && !k.classList.contains('correct')) { k.classList.remove('absent'); k.classList.add('present'); }
+                        else if(res[i]==='absent' && !k.classList.contains('correct') && !k.classList.contains('present')) k.classList.add('absent');
+                    }
+
+                    if(i === targetWord.length-1) setTimeout(()=> endTurn(ptsThisTurn, g===targetWord), 400);
+                }, i * 200);
+            });
+        }
+
+        function endTurn(ptsThisTurn, isWin) {
+            if(ptsThisTurn > 0) { 
+                stats.points += ptsThisTurn; 
+                saveStats(); 
+                updateShop();
+                showFloatingPoints(ptsThisTurn);
+            }
+
+            if(isWin) {
+                winGame();
+            } else {
+                currentRow++;
+                if(currentRow >= maxAttempts) loseGame();
+                else {
+                    currentGuess=[]; gameActive=true;
+                    locked.forEach(idx => {
+                        let t = document.getElementById(`row-${currentRow}`).querySelectorAll('.tile')[idx];
+                        t.querySelector('.tile-front').innerText = targetWord[idx];
+                        t.querySelector('.tile-front').style.color = 'var(--correct)';
+                        t.querySelector('.tile-front').style.textShadow = '0 0 10px var(--correct)';
+                    });
+                }
+            }
+        }
+
+        /* --- FX --- */
+        function showFloatingPoints(pts) {
+            let fs = document.createElement('div');
+            fs.className = 'floating-score';
+            fs.innerText = `+${pts}`;
+            let badge = document.getElementById('points-badge-ui');
+            let rect = badge.getBoundingClientRect();
+            fs.style.left = `${rect.left + (rect.width / 2) - 15}px`;
+            fs.style.top = `${rect.top}px`;
+            document.body.appendChild(fs);
+            setTimeout(() => fs.remove(), 1200);
+        }
+
+        function showStageCombo(c) {
+            let txt = "فوز متتالي!"; let col = "#fbbf24";
+            if(c>=3){ txt="بطل اللعبة!"; col="#ef4444"; document.body.classList.add('screen-shake'); setTimeout(()=>document.body.classList.remove('screen-shake'),400); }
+            let d = document.getElementById('combo-display');
+            d.innerText = `${txt}\nمراحل x${c}`; d.style.color = col; d.style.textAlign = 'center';
+            d.style.animation = 'none'; void d.offsetWidth; d.style.animation = 'blast 1.8s ease forwards';
+        }
+
+        function toast(m) {
+            let t = document.getElementById('toast'); t.innerText = m; t.classList.add('show');
+            setTimeout(()=> t.classList.remove('show'), 2000);
+        }
+
+        function confetti() {
+            let cols = ['#10b981', '#6366f1', '#fbbf24', '#ef4444'];
+            for(let i=0; i<60; i++){
+                let p = document.createElement('div'); p.className='particle';
+                p.style.width = p.style.height = (Math.random()*12+6)+'px';
+                p.style.background = cols[Math.floor(Math.random()*cols.length)];
+                p.style.left = '50%'; p.style.top = '50%';
+                let a = Math.random()*Math.PI*2; let d = Math.random()*250+100;
+                p.style.setProperty('--tx', Math.cos(a)*d+'px'); p.style.setProperty('--ty', Math.sin(a)*d+'px');
+                document.body.appendChild(p); setTimeout(()=>p.remove(), 1200);
+            }
+        }
+
+        /* --- End --- */
+        function winGame() {
+            playSfx('win'); stats.wins++; stats.streak++; confetti();
+            
+            // الكومبو يعتمد على سلسلة الانتصارات (عدد المراحل المتتالية)
+            if(stats.streak > 1) {
+                showStageCombo(stats.streak);
+            }
+
+            // مكافأة الفوز = أساسي (2 نقاط) + نقاط للمحاولات المتبقية (2) + مكافأة الكومبو (2 * سلسلة الفوز)
+            let baseWin = 2;
+            let attemptsBonus = (maxAttempts - currentRow - 1) * 2;
+            let comboBonus = stats.streak > 1 ? (stats.streak * 2) : 0;
+            let totalWinPoints = baseWin + attemptsBonus + comboBonus;
+
+            stats.points += totalWinPoints; saveStats(); updateShop();
+            if(totalWinPoints > 0) setTimeout(() => showFloatingPoints(totalWinPoints), 500);
+
+            setTimeout(() => {
+                document.getElementById('end-title').innerText = "كفو يا وحش! 🏆";
+                document.getElementById('end-title').style.color = "var(--correct)";
+                document.getElementById('end-word').innerText = targetWord;
+                document.getElementById('end-hint').innerText = hint;
+                document.getElementById('end-earned').innerText = `+${totalWinPoints}`;
+                document.getElementById('end-combo').innerText = `x${stats.streak}`;
+                document.getElementById('end-overlay').classList.add('active');
+            }, 1200); // تأخير قليل ليظهر الكومبو بوضوح
+        }
+
+        function loseGame() {
+            playSfx('lose'); stats.streak = 0; saveStats();
+            setTimeout(() => {
+                document.getElementById('end-title').innerText = "هاردلك! 💔";
+                document.getElementById('end-title').style.color = "#ef4444";
+                document.getElementById('end-word').innerText = targetWord;
+                document.getElementById('end-hint').innerText = hint;
+                document.getElementById('end-earned').innerText = "0";
+                document.getElementById('end-combo').innerText = "0";
+                document.getElementById('end-overlay').classList.add('active');
+            }, 1000);
+        }
+
+        /* --- Shop (أسعار مرتفعة) --- */
+        function updateShop() {
+            const items = [{id:'shop-hint',c:25},{id:'shop-reveal',c:35},{id:'shop-extra',c:50},{id:'shop-remove',c:40}];
+            items.forEach(i => {
+                let el = document.getElementById(i.id);
+                if(stats.points < i.c) el.classList.add('locked'); else el.classList.remove('locked');
+            });
+        }
+        function buyItem(t, c) {
+            if(!gameActive || stats.points < c) return;
+            if(t==='hint'){ toast(`تلميح: ${hint}`); playSfx('coin'); }
+            else if(t==='reveal'){
+                let av = []; for(let i=0; i<targetWord.length; i++) if(!locked.includes(i) && currentGuess[i]!==targetWord[i]) av.push(i);
+                if(av.length===0){ toast("كل الحروف مكشوفة!"); return; }
+                let r = av[Math.floor(Math.random()*av.length)]; 
+                locked.push(r); discoveredPositions.push(r); // لا نأخذ نقطة مجانية
+                
+                let tile = document.getElementById(`row-${currentRow}`).querySelectorAll('.tile')[r];
+                tile.querySelector('.tile-front').innerText = targetWord[r];
+                tile.querySelector('.tile-front').style.color = 'var(--correct)';
+                let k = document.getElementById(`key-${targetWord[r]}`); if(k) k.classList.add('correct');
+                toast("تم كشف حرف!"); playSfx('coin');
+            }
+            else if(t==='extra'){
+                maxAttempts++;
+                let r = document.createElement('div'); r.className='row'; r.id=`row-${maxAttempts-1}`;
+                for(let j=0; j<targetWord.length; j++) r.innerHTML += `<div class="tile"><div class="tile-face tile-front"></div><div class="tile-face tile-back"></div></div>`;
+                document.getElementById('board').appendChild(r); toast("تم إضافة محاولة!"); playSfx('coin');
+            }
+            else if(t==='remove'){
+                let rm=0;
+                document.querySelectorAll('.key').forEach(k=>{
+                    let l=k.innerText; if(l.length===1 && !targetWord.includes(l) && !k.classList.contains('absent') && rm<3){ k.classList.add('hidden'); rm++; }
+                });
+                toast("تم حذف أحرف خاطئة!"); playSfx('coin');
+            }
+            stats.points -= c; saveStats(); updateShop();
+        }
+
+        /* --- Settings --- */
+        function openSettings(){ document.getElementById('settings-overlay').classList.add('active'); updateSetUI(); }
+        function closeSettings(){ document.getElementById('settings-overlay').classList.remove('active'); }
+        function toggleTheme(){ settings.dark = !settings.dark; applyTheme(); localStorage.setItem('khamenha_set_final_v4', JSON.stringify(settings)); }
+        function toggleSound(){ settings.sound = !settings.sound; updateSetUI(); localStorage.setItem('khamenha_set_final_v4', JSON.stringify(settings)); }
+        function applyTheme(){ if(settings.dark) document.body.classList.remove('light-theme'); else document.body.classList.add('light-theme'); updateSetUI(); }
+        function updateSetUI(){
+            document.getElementById('btn-theme').innerText = settings.dark ? "🌙 المظهر (داكن)" : "☀️ المظهر (فاتح)";
+            document.getElementById('btn-sound').innerText = settings.sound ? "🔊 الصوت (شغال)" : "🔇 الصوت (مطفي)";
+        }
+        function resetStats(){
+            if(confirm("هل أنت متأكد من تصفير جميع البيانات؟")){ stats={points:0,streak:0,wins:0}; saveStats(); toast("تم التصفير!"); closeSettings(); }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
