@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>خمنها | النسخة الاحترافية 3D (النهائية V4)</title>
+    <title>خمنها</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* ==========================================
@@ -25,6 +25,7 @@
             --present-shadow: #b45309;
             --absent: #3f3f5a;
             --absent-shadow: #2a2a3d;
+            --duplicate: #3b82f6;
             
             --key-bg: #2d2e43;
             --key-shadow: #1e1e2d;
@@ -52,7 +53,7 @@
         }
 
         /* ==========================================
-           2. BASE SETUP & ANIMATIONS
+           2. BASE SETUP & PC CENTERING
         ========================================== */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         
@@ -64,16 +65,24 @@
             transition: all 0.4s ease;
         }
 
+        /* PC Layout Wrapper */
+        .app-container {
+            width: 100%; max-width: 650px; margin: 0 auto;
+            display: flex; flex-direction: column; height: 100%;
+            position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            background: var(--bg-bottom);
+        }
+
         /* Floating Score Animation */
         .floating-score {
-            position: absolute; font-size: 2.2rem; font-weight: 900; color: var(--correct);
+            position: absolute; font-size: 2.5rem; font-weight: 900; color: var(--correct);
             text-shadow: 0 4px 15px rgba(16, 185, 129, 0.6); pointer-events: none; z-index: 200;
-            animation: floatScore 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: floatScore 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         @keyframes floatScore {
             0% { opacity: 0; transform: translateY(10px) scale(0.5); }
             20% { opacity: 1; transform: translateY(-10px) scale(1.2); }
-            100% { opacity: 0; transform: translateY(-70px) scale(1); }
+            100% { opacity: 0; transform: translateY(-80px) scale(1); }
         }
 
         /* ==========================================
@@ -89,14 +98,14 @@
         .btn-primary {
             background: var(--primary); color: white; padding: 1.2rem 3rem; font-size: 1.5rem;
             box-shadow: 0 6px 0 var(--primary-shadow), 0 10px 25px var(--primary-glow);
-            width: 85%; max-width: 350px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            width: 85%; max-width: 350px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); margin-bottom: 1rem;
         }
         .btn-primary:active { box-shadow: 0 0px 0 var(--primary-shadow), 0 5px 10px var(--primary-glow); }
 
         .btn-secondary {
             background: var(--key-bg); color: var(--text-main); padding: 1rem 2rem; font-size: 1.2rem;
             box-shadow: 0 6px 0 var(--key-shadow); border: 2px solid var(--shop-border);
-            width: 85%; max-width: 350px;
+            width: 85%; max-width: 350px; margin-bottom: 1rem;
         }
         .btn-secondary:active { box-shadow: 0 0px 0 var(--key-shadow); }
 
@@ -133,7 +142,7 @@
         /* ==========================================
            5. GAME UI (HEADER & SHOP)
         ========================================== */
-        #game-view { display: none; flex-direction: column; height: 100dvh; }
+        #game-view { display: none; flex-direction: column; height: 100%; }
 
         .header {
             display: flex; justify-content: space-between; align-items: center;
@@ -201,7 +210,6 @@
             border-bottom: 6px solid rgba(0,0,0,0.3);
         }
 
-        /* Typing Pop Animation */
         .tile.active .tile-front {
             border-color: var(--primary); border-bottom-color: var(--primary-shadow);
             transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.3);
@@ -215,25 +223,27 @@
         .tile-back.revealed { background: linear-gradient(135deg, var(--correct), #34d399); border-bottom-color: var(--correct-shadow); box-shadow: 0 0 25px rgba(16,185,129,0.5); }
 
         /* ==========================================
-           7. MECHANICAL KEYBOARD
+           7. MECHANICAL KEYBOARD & BLUE DOT
         ========================================== */
         .keyboard {
             padding: 12px 6px; padding-bottom: env(safe-area-inset-bottom, 25px);
             background: var(--bg-top); box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
             border-top: 1px solid var(--shop-border); flex-shrink: 0;
-            display: flex; flex-direction: column; gap: 8px;
+            display: flex; flex-direction: column; gap: 8px; width: 100%;
         }
 
-        .key-row { display: flex; justify-content: center; gap: 6px; max-width: 600px; margin: 0 auto; width: 100%; }
+        .key-row { display: flex; justify-content: center; gap: 6px; width: 100%; margin: 0 auto; }
 
         .key {
-            flex: 1; height: 60px; min-width: 0;
+            flex: 1; height: 60px; min-width: 0; position: relative;
             background: var(--key-bg); color: var(--text-main);
             border: 2px solid var(--shop-border); border-bottom: 6px solid var(--key-shadow);
             border-radius: 12px; font-family: inherit; font-size: 1.4rem; font-weight: 800;
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; transition: transform 0.05s, border-width 0.05s, background 0.3s;
         }
+
+        @media (hover: hover) { .key:hover { background: var(--shop-bg); } }
 
         .key:active { transform: translateY(4px); border-bottom-width: 2px; }
         .key.large { flex: 1.6; font-size: 1.1rem; background: var(--shop-bg); }
@@ -243,8 +253,17 @@
         .key.absent { background: var(--absent); color: rgba(255,255,255,0.3); border-color: var(--absent); border-bottom-color: var(--absent-shadow); opacity: 0.5; }
         .key.hidden { opacity: 0; pointer-events: none; transform: scale(0.5); transition: 0.4s; }
 
+        /* Duplicate Letter Blue Dot */
+        .key.duplicate::after {
+            content: ''; position: absolute; top: 6px; right: 6px;
+            width: 10px; height: 10px; background: var(--duplicate);
+            border-radius: 50%; box-shadow: 0 0 10px var(--duplicate), 0 0 5px white;
+            animation: pulseBlue 1.5s infinite alternate;
+        }
+        @keyframes pulseBlue { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.3); opacity: 1; } }
+
         /* ==========================================
-           8. MODALS & EFFECTS
+           8. MODALS, TUTORIAL & EFFECTS
         ========================================== */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -254,18 +273,36 @@
         }
 
         .modal {
-            background: var(--modal-bg); padding: 2.5rem; border-radius: 30px;
+            background: var(--modal-bg); padding: 2rem; border-radius: 30px;
             width: 90%; max-width: 420px; text-align: center;
             border: 2px solid var(--shop-border); box-shadow: 0 25px 60px rgba(0,0,0,0.8);
             transform: translateY(50px) scale(0.9); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh; overflow-y: auto;
         }
+        .modal::-webkit-scrollbar { display: none; }
         
         .overlay.active { opacity: 1; display: flex; }
         .overlay.active .modal { transform: translateY(0) scale(1); }
 
-        .modal h2 { font-size: 3rem; margin-bottom: 1rem; color: var(--text-main); text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .modal h2 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--text-main); text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .modal .word-reveal { font-size: 3.5rem; font-weight: 900; color: var(--primary); margin: 1rem 0; letter-spacing: 2px; text-shadow: 0 0 25px var(--primary-glow); }
         .modal .hint-reveal { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 2rem; font-weight: 700;}
+
+        /* Tutorial Styles */
+        .tutorial-box { display: flex; align-items: center; gap: 15px; margin-bottom: 1.5rem; text-align: right; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; }
+        .tut-tile {
+            width: 45px; height: 45px; border-radius: 10px; font-weight: 900; font-size: 1.5rem;
+            display: flex; justify-content: center; align-items: center; color: white; flex-shrink: 0;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3); position: relative;
+        }
+        .tut-tile.correct { background: var(--correct); }
+        .tut-tile.present { background: var(--present); }
+        .tut-tile.absent { background: var(--absent); }
+        .tut-tile.dup::after {
+            content: ''; position: absolute; top: -5px; right: -5px; width: 12px; height: 12px;
+            background: var(--duplicate); border-radius: 50%; box-shadow: 0 0 10px var(--duplicate); border: 2px solid var(--modal-bg);
+        }
+        .tut-text { font-size: 1.1rem; font-weight: 700; line-height: 1.4; }
 
         /* Toast */
         .toast {
@@ -273,16 +310,16 @@
             background: var(--text-main); color: var(--bg-bottom);
             padding: 1.2rem 2.5rem; border-radius: 20px; font-weight: 900; font-size: 1.2rem;
             z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5); width: max-content;
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
 
-        /* Combo Popup (Stage Win Combo) */
+        /* Combo Popup */
         .combo-text {
             position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%) scale(0);
             font-size: 4rem; font-weight: 900; color: white; z-index: 500; pointer-events: none;
             text-shadow: 0 10px 25px rgba(0,0,0,0.6), 0 0 40px var(--present);
-            -webkit-text-stroke: 2px var(--bg-top); white-space: nowrap;
+            -webkit-text-stroke: 2px var(--bg-top); white-space: nowrap; text-align: center;
         }
         @keyframes blast {
             0% { transform: translate(-50%, -10%) scale(0); opacity: 0; }
@@ -302,7 +339,7 @@
     </style>
 </head>
 <body>
-
+<div class="app-container">
     <!-- ==========================================
          MAIN MENU
     ========================================== -->
@@ -320,7 +357,8 @@
             </div>
         </div>
 
-        <button class="btn-3d btn-primary" style="margin-bottom: 1.5rem;" onclick="startGame()">ابدأ التحدي 🔥</button>
+        <button class="btn-3d btn-primary" onclick="startGame()">ابدأ التحدي 🔥</button>
+        <button class="btn-3d btn-secondary" onclick="openHelp()">كيف تلعب؟ 📖</button>
         <button class="btn-3d btn-secondary" onclick="openSettings()">الإعدادات ⚙️</button>
     </div>
 
@@ -330,7 +368,7 @@
     <div id="game-view">
         
         <div class="header">
-            <button class="btn-3d btn-secondary" style="padding: 0.5rem 1rem; font-size: 1.2rem; width: auto;" onclick="quitGame()">↩</button>
+            <button class="btn-3d btn-secondary" style="padding: 0.5rem 1rem; font-size: 1.2rem; width: auto; margin:0;" onclick="quitGame()">↩</button>
             <div class="points-badge" id="points-badge-ui"><span id="game-points">0</span> 🌟</div>
         </div>
 
@@ -369,6 +407,44 @@
     </div>
 
     <!-- ==========================================
+         HELP / TUTORIAL MODAL
+    ========================================== -->
+    <div class="overlay" id="help-overlay">
+        <div class="modal">
+            <h2 style="font-size: 2rem;">كيف تلعب؟ 🎮</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 700;">خمن الكلمة المخفية خلال 5 محاولات. بعد كل محاولة، بيتغير لون المربع ليدلك قديش أنت قريب من الكلمة الصح.</p>
+            
+            <div class="tutorial-box">
+                <div class="tut-tile correct">خ</div>
+                <div class="tut-text"><span style="color:var(--correct)">اللون الأخضر:</span> الحرف موجود بالكلمة وبمكانه الصح 100%.</div>
+            </div>
+            <div class="tutorial-box">
+                <div class="tut-tile present">م</div>
+                <div class="tut-text"><span style="color:var(--present)">اللون البرتقالي:</span> الحرف موجود بالكلمة بس بغير مكان.</div>
+            </div>
+            <div class="tutorial-box">
+                <div class="tut-tile absent">ن</div>
+                <div class="tut-text"><span style="color:var(--absent)">اللون الغامق:</span> الحرف مو موجود بالكلمة أبداً.</div>
+            </div>
+            <div class="tutorial-box" style="border: 2px solid var(--duplicate);">
+                <div class="tut-tile tut-tile-kb dup" style="background: var(--key-bg);">ش</div>
+                <div class="tut-text"><span style="color:var(--duplicate)">النقطة الزرقاء:</span> إذا طلعت عالكيبورد، معناها هاد الحرف <b>مكرر</b> (موجود مرتين أو أكتر بالكلمة).</div>
+            </div>
+            
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 10px; margin-bottom: 1.5rem;">
+                <p style="color: var(--correct); font-weight: 900; margin-bottom: 5px;">🔥 نظام النقاط:</p>
+                <ul style="list-style: none; text-align: right; color: white; font-weight: 700; font-size: 0.9rem;">
+                    <li>- فوز من أول 3 محاولات = 10 نقاط</li>
+                    <li>- فوز بآخر محاولتين = 5 نقاط</li>
+                    <li>- اكتشاف حرف جديد = نقطة واحدة</li>
+                </ul>
+            </div>
+
+            <button class="btn-3d btn-primary" style="width: 100%; margin:0;" onclick="closeHelp()">فهمت، يلا نلعب! 🚀</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
          END GAME MODAL
     ========================================== -->
     <div class="overlay" id="end-overlay">
@@ -388,7 +464,7 @@
                 </div>
             </div>
             
-            <button class="btn-3d btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="startGame()">المرحلة التالية</button>
+            <button class="btn-3d btn-primary" style="width: 100%;" onclick="startGame()">المرحلة التالية</button>
             <button class="btn-3d btn-secondary" style="width: 100%;" onclick="quitGame()">القائمة الرئيسية</button>
         </div>
     </div>
@@ -398,33 +474,34 @@
     ========================================== -->
     <div class="overlay" id="settings-overlay">
         <div class="modal">
-            <h2>الإعدادات</h2>
+            <h2 style="font-size: 2rem;">الإعدادات</h2>
             <div style="display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;">
-                <button class="btn-3d btn-secondary" style="width: 100%;" onclick="toggleTheme()" id="btn-theme">🌙 المظهر (داكن)</button>
-                <button class="btn-3d btn-secondary" style="width: 100%;" onclick="toggleSound()" id="btn-sound">🔊 الصوت (شغال)</button>
-                <button class="btn-3d btn-secondary" style="width: 100%; color: #ef4444; border-color: #ef4444;" onclick="resetStats()">⚠️ مسح البيانات</button>
+                <button class="btn-3d btn-secondary" style="width: 100%; margin:0;" onclick="toggleTheme()" id="btn-theme">🌙 المظهر (داكن)</button>
+                <button class="btn-3d btn-secondary" style="width: 100%; margin:0;" onclick="toggleSound()" id="btn-sound">🔊 الصوت (شغال)</button>
+                <button class="btn-3d btn-secondary" style="width: 100%; margin:0; color: #ef4444; border-color: #ef4444;" onclick="resetStats()">⚠️ مسح البيانات</button>
             </div>
-            <button class="btn-3d btn-primary" style="width: 100%;" onclick="closeSettings()">حفظ وإغلاق</button>
+            <button class="btn-3d btn-primary" style="width: 100%; margin:0;" onclick="closeSettings()">حفظ وإغلاق</button>
         </div>
     </div>
 
     <!-- Toast -->
     <div class="toast" id="toast">رسالة تنبيه</div>
+</div>
 
     <!-- ==========================================
          JAVASCRIPT LOGIC
     ========================================== -->
     <script>
-        /* --- Database (Massive Expansion - 300+ Words) --- */
+        /* --- Database (Massive Expansion - 350+ Words) --- */
         const wordDatabase = [
             // التقنية
-            {w:"حاسوب", h:"جهاز إلكتروني"},{w:"هاتف", h:"للاتصال"},{w:"إنترنت", h:"شبكة عالمية"},{w:"شاشة", h:"للعرض"},{w:"لوحة", h:"مفاتيح"},{w:"خادم", h:"مزود شبكة"},{w:"متصفح", h:"لتصفح الويب"},{w:"تطبيق", h:"برنامج وظيفي"},{w:"برمجة", h:"كتابة أوامر"},{w:"موقع", h:"عنوان رقمي"},{w:"شبكة", h:"اتصال أجهزة"},{w:"بيانات", h:"معلومات"},{w:"ذاكرة", h:"للتخزين"},{w:"معالج", h:"عقل الجهاز"},{w:"بريد", h:"رسائل رقمية"},{w:"تشفير", h:"حماية أمنية"},{w:"رابط", h:"عنوان إنترنت"},{w:"سحابة", h:"تخزين افتراضي"},{w:"روبوت", h:"آلة مبرمجة"},{w:"طابعة", h:"ورقية"},{w:"بطارية", h:"مزود طاقة"},
+            {w:"حاسوب", h:"جهاز إلكتروني"},{w:"هاتف", h:"للاتصال"},{w:"إنترنت", h:"شبكة عالمية"},{w:"شاشة", h:"للعرض"},{w:"لوحة", h:"مفاتيح"},{w:"خادم", h:"مزود شبكة"},{w:"متصفح", h:"لتصفح الويب"},{w:"تطبيق", h:"برنامج وظيفي"},{w:"برمجة", h:"كتابة أوامر"},{w:"موقع", h:"عنوان رقمي"},{w:"شبكة", h:"اتصال أجهزة"},{w:"بيانات", h:"معلومات"},{w:"ذاكرة", h:"للتخزين"},{w:"معالج", h:"عقل الجهاز"},{w:"بريد", h:"رسائل رقمية"},{w:"تشفير", h:"حماية أمنية"},{w:"رابط", h:"عنوان إنترنت"},{w:"سحابة", h:"تخزين افتراضي"},{w:"روبوت", h:"آلة مبرمجة"},{w:"طابعة", h:"ورقية"},{w:"بطارية", h:"مزود طاقة"},{w:"سلك", h:"ناقل كهربائي"},{w:"قرص", h:"وحدة تخزين"},
             // الطبيعة والطقس
-            {w:"شجرة", h:"نبات ضخم"},{w:"قمر", h:"جرم ليلي"},{w:"شمس", h:"نجم مضيء"},{w:"جبل", h:"تضاريس مرتفعة"},{w:"بحر", h:"مسطح مالح"},{w:"محيط", h:"مياه هائلة"},{w:"نهر", h:"مجرى عذب"},{w:"غابة", h:"أشجار كثيفة"},{w:"صحراء", h:"منطقة جافة"},{w:"سماء", h:"فضاء علوي"},{w:"مطر", h:"هطول مائي"},{w:"ثلج", h:"ماء متجمد"},{w:"غيمة", h:"بخار متكثف"},{w:"برق", h:"وميض كهربائي"},{w:"رعد", h:"صوت العاصفة"},{w:"عاصفة", h:"رياح هوجاء"},{w:"زلزال", h:"هزة أرضية"},{w:"بركان", h:"حمم نارية"},{w:"نبات", h:"كائن ينمو"},{w:"زهرة", h:"نبتة ملونة"},{w:"تراب", h:"أرضية"},
+            {w:"شجرة", h:"نبات ضخم"},{w:"قمر", h:"جرم ليلي"},{w:"شمس", h:"نجم مضيء"},{w:"جبل", h:"تضاريس مرتفعة"},{w:"بحر", h:"مسطح مالح"},{w:"محيط", h:"مياه هائلة"},{w:"نهر", h:"مجرى عذب"},{w:"غابة", h:"أشجار كثيفة"},{w:"صحراء", h:"منطقة جافة"},{w:"سماء", h:"فضاء علوي"},{w:"مطر", h:"هطول مائي"},{w:"ثلج", h:"ماء متجمد"},{w:"غيمة", h:"بخار متكثف"},{w:"برق", h:"وميض كهربائي"},{w:"رعد", h:"صوت العاصفة"},{w:"عاصفة", h:"رياح هوجاء"},{w:"زلزال", h:"هزة أرضية"},{w:"بركان", h:"حمم نارية"},{w:"نبات", h:"كائن ينمو"},{w:"زهرة", h:"نبتة ملونة"},{w:"تراب", h:"أرضية"},{w:"وادي", h:"منخفض أرضي"},{w:"جزيرة", h:"يابسة وسط الماء"},{w:"بحيرة", h:"مسطح مائي مغلق"},
             // حيوانات
-            {w:"أسد", h:"ملك الغابة"},{w:"نمر", h:"مخطط"},{w:"فيل", h:"ضخم جداً"},{w:"زرافة", h:"عنق طويل"},{w:"قرد", h:"متسلق"},{w:"حصان", h:"للركوب"},{w:"حمار", h:"للحمل"},{w:"كلب", h:"وفي"},{w:"قطة", h:"أليف"},{w:"طائر", h:"يطير"},{w:"تمساح", h:"زاحف برمائي"},{w:"ثعبان", h:"زاحف سام"},{w:"غزال", h:"رشيق"},{w:"ذئب", h:"حيوان مفترس"},{w:"ثعلب", h:"ماكر"},{w:"دب", h:"ينام شتاءً"},{w:"خروف", h:"مصدر صوف"},{w:"بقرة", h:"مصدر حليب"},{w:"أرنب", h:"سريع القفز"},{w:"فأر", h:"قارض"},{w:"نسر", h:"طائر جارح"},{w:"صقر", h:"طائر سريع"},{w:"بومة", h:"طائر ليلي"},{w:"نحلة", h:"حشرة منتجة"},{w:"نملة", h:"حشرة مجتهدة"},
+            {w:"أسد", h:"ملك الغابة"},{w:"نمر", h:"مخطط"},{w:"فيل", h:"ضخم جداً"},{w:"زرافة", h:"عنق طويل"},{w:"قرد", h:"متسلق"},{w:"حصان", h:"للركوب"},{w:"حمار", h:"للحمل"},{w:"كلب", h:"وفي"},{w:"قطة", h:"أليف"},{w:"طائر", h:"يطير"},{w:"تمساح", h:"زاحف برمائي"},{w:"ثعبان", h:"زاحف سام"},{w:"غزال", h:"رشيق"},{w:"ذئب", h:"حيوان مفترس"},{w:"ثعلب", h:"ماكر"},{w:"دب", h:"ينام شتاءً"},{w:"خروف", h:"مصدر صوف"},{w:"بقرة", h:"مصدر حليب"},{w:"أرنب", h:"سريع القفز"},{w:"فأر", h:"قارض"},{w:"نسر", h:"طائر جارح"},{w:"صقر", h:"طائر سريع"},{w:"بومة", h:"طائر ليلي"},{w:"نحلة", h:"حشرة منتجة"},{w:"نملة", h:"حشرة مجتهدة"},{w:"ضبع", h:"يضحك"},{w:"سلحفاة", h:"بطيئة جداً"},{w:"ضفدع", h:"يقفز وبرمائي"},{w:"أفعى", h:"زاحف يلدغ"},{w:"أخطبوط", h:"له 8 أذرع"},{w:"إوزة", h:"طائر مائي"},
             // أطعمة وأشربة
-            {w:"خبز", h:"من العجين"},{w:"حليب", h:"سائل مغذي"},{w:"بيض", h:"من الدواجن"},{w:"جبنة", h:"مشتقات الألبان"},{w:"لحم", h:"بروتين حيواني"},{w:"دجاج", h:"طائر يؤكل"},{w:"سمك", h:"طعام بحري"},{w:"أرز", h:"حبوب بيضاء"},{w:"تفاح", h:"فاكهة"},{w:"برتقال", h:"فاكهة حمضية"},{w:"موز", h:"فاكهة صفراء"},{w:"عنب", h:"فاكهة صيفية"},{w:"بطيخ", h:"فاكهة كبيرة"},{w:"تمر", h:"من النخيل"},{w:"زيتون", h:"يستخرج منه زيت"},{w:"بصل", h:"خضار لاذع"},{w:"ثوم", h:"رائحة قوية"},{w:"طماطم", h:"خضار أحمر"},{w:"خيار", h:"خضار أخضر"},{w:"بطاطا", h:"خضار نشوي"},{w:"فلفل", h:"بهار حار"},{w:"سكر", h:"محلي"},{w:"ملح", h:"متبل"},{w:"قهوة", h:"مشروب منبه"},{w:"شاي", h:"مشروب ساخن"},{w:"عصير", h:"مشروب فواكه"},{w:"ماء", h:"سر الحياة"},{w:"حلوى", h:"طعام سكري"},{w:"عسل", h:"رحيق النحل"},
+            {w:"خبز", h:"من العجين"},{w:"حليب", h:"سائل مغذي"},{w:"بيض", h:"من الدواجن"},{w:"جبنة", h:"مشتقات الألبان"},{w:"لحم", h:"بروتين حيواني"},{w:"دجاج", h:"طائر يؤكل"},{w:"سمك", h:"طعام بحري"},{w:"أرز", h:"حبوب بيضاء"},{w:"تفاح", h:"فاكهة"},{w:"برتقال", h:"فاكهة حمضية"},{w:"موز", h:"فاكهة صفراء"},{w:"عنب", h:"فاكهة صيفية"},{w:"بطيخ", h:"فاكهة كبيرة"},{w:"تمر", h:"من النخيل"},{w:"زيتون", h:"يستخرج منه زيت"},{w:"بصل", h:"خضار لاذع"},{w:"ثوم", h:"رائحة قوية"},{w:"طماطم", h:"خضار أحمر"},{w:"خيار", h:"خضار أخضر"},{w:"بطاطا", h:"خضار نشوي"},{w:"فلفل", h:"بهار حار"},{w:"سكر", h:"محلي"},{w:"ملح", h:"متبل"},{w:"قهوة", h:"مشروب منبه"},{w:"شاي", h:"مشروب ساخن"},{w:"عصير", h:"مشروب فواكه"},{w:"ماء", h:"سر الحياة"},{w:"حلوى", h:"طعام سكري"},{w:"عسل", h:"رحيق النحل"},{w:"أناناس", h:"فاكهة استوائية"},{w:"أفوكادو", h:"ثمرة دهنية مفيدة"},
             // مهن ووظائف
             {w:"طبيب", h:"يعالج المرضى"},{w:"مهندس", h:"يصمم"},{w:"معلم", h:"يربي الأجيال"},{w:"طالب", h:"يتعلم"},{w:"مدير", h:"يشرف"},{w:"عامل", h:"يعمل بيده"},{w:"فلاح", h:"يزرع الأرض"},{w:"شرطي", h:"يحفظ الأمن"},{w:"جندي", h:"يحمي الوطن"},{w:"طيار", h:"يقود طائرة"},{w:"قاضي", h:"يحكم بالعدل"},{w:"محامي", h:"يدافع عن الحق"},{w:"كاتب", h:"يؤلف"},{w:"شاعر", h:"يكتب القصائد"},{w:"رسام", h:"يبدع بالفرشاة"},{w:"مغني", h:"يؤدي بصوته"},{w:"ممثل", h:"يؤدي أدواراً"},{w:"طباخ", h:"يعد الطعام"},{w:"خباز", h:"يصنع الخبز"},{w:"حلاق", h:"يعتني بالشعر"},{w:"نجار", h:"يصنع الأثاث"},{w:"حداد", h:"يشكل المعادن"},{w:"خياط", h:"يفصل الملابس"},{w:"سباك", h:"يصلح الأنابيب"},{w:"محاسب", h:"مدير مالي"},{w:"سائق", h:"يقود سيارة"},{w:"صحفي", h:"ينقل الأخبار"},
             // أدوات مدرسية ومكتبية
@@ -432,34 +509,41 @@
             // ملابس وأزياء
             {w:"قميص", h:"لباس علوي"},{w:"بنطال", h:"لباس سفلي"},{w:"حذاء", h:"للقدمين"},{w:"قبعة", h:"غطاء للرأس"},{w:"معطف", h:"لباس شتوي"},{w:"جورب", h:"تحت الحذاء"},{w:"سترة", h:"لباس خفيف"},{w:"فستان", h:"لباس نسائي"},{w:"وشاح", h:"للعنق"},{w:"حزام", h:"للخصر"},{w:"قفاز", h:"لليدين"},{w:"نظارة", h:"للعينين"},{w:"خاتم", h:"للإصبع"},{w:"عقد", h:"للزينة"},
             // ألوان
-            {w:"أحمر", h:"لون الدم"},{w:"أصفر", h:"لون الشمس"},{w:"أخضر", h:"لون العشب"},{w:"أزرق", h:"لون السماء"},{w:"أسود", h:"لون الليل"},{w:"أبيض", h:"لون الثلج"},{w:"رمادي", h:"لون الدخان"},{w:"بني", h:"لون الخشب"},
+            {w:"أحمر", h:"لون الدم"},{w:"أصفر", h:"لون الشمس"},{w:"أخضر", h:"لون العشب"},{w:"أزرق", h:"لون السماء"},{w:"أسود", h:"لون الليل"},{w:"أبيض", h:"لون الثلج"},{w:"رمادي", h:"لون الدخان"},{w:"بني", h:"لون الخشب"},{w:"أرجواني", h:"لون بنفسجي"},{w:"أسمر", h:"لون بشرة"},{w:"أشقر", h:"لون شعر فاتح"},
             // أدوات المطبخ والمنزل
-            {w:"ملعقة", h:"أداة للأكل"},{w:"شوكة", h:"أداة مسننة"},{w:"سكين", h:"أداة للتقطيع"},{w:"صحن", h:"وعاء للطعام"},{w:"كوب", h:"وعاء للشرب"},{w:"إبريق", h:"لصب السوائل"},{w:"مقلاة", h:"للقلي"},{w:"سرير", h:"للنوم"},{w:"طاولة", h:"للجلوس حولها"},{w:"كرسي", h:"للجلوس"},{w:"خزانة", h:"لحفظ الأشياء"},{w:"نافذة", h:"للتهوية"},{w:"باب", h:"مدخل"},{w:"جدار", h:"حائط"},{w:"سقف", h:"الغطاء العلوي"},{w:"سجادة", h:"تفرش على الأرض"},{w:"مصباح", h:"للإنارة"},
+            {w:"ملعقة", h:"أداة للأكل"},{w:"شوكة", h:"أداة مسننة"},{w:"سكين", h:"أداة للتقطيع"},{w:"صحن", h:"وعاء للطعام"},{w:"كوب", h:"وعاء للشرب"},{w:"إبريق", h:"لصب السوائل"},{w:"مقلاة", h:"للقلي"},{w:"سرير", h:"للنوم"},{w:"طاولة", h:"للجلوس حولها"},{w:"كرسي", h:"للجلوس"},{w:"خزانة", h:"لحفظ الأشياء"},{w:"نافذة", h:"للتهوية"},{w:"باب", h:"مدخل"},{w:"جدار", h:"حائط"},{w:"سقف", h:"الغطاء العلوي"},{w:"سجادة", h:"تفرش على الأرض"},{w:"مصباح", h:"للإنارة"},{w:"قدر", h:"وعاء للطبخ"},{w:"غطاء", h:"يستر الأشياء"},{w:"مفتاح", h:"يفتح القفل"},{w:"قفل", h:"لإغلاق الباب"},
             // العائلة والمجتمع
-            {w:"عائلة", h:"الأسرة"},{w:"رجل", h:"ذكر بالغ"},{w:"امرأة", h:"أنثى بالغة"},{w:"طفل", h:"صغير في السن"},{w:"أخ", h:"شقيق"},{w:"أخت", h:"شقيقة"},{w:"جد", h:"والد الأب أو الأم"},{w:"جدة", h:"والدة الأب أو الأم"},{w:"عم", h:"أخو الأب"},{w:"عمة", h:"أخت الأب"},{w:"خال", h:"أخو الأم"},{w:"خالة", h:"أخت الأم"},{w:"صديق", h:"رفيق"},{w:"جار", h:"يسكن بقربك"},
+            {w:"عائلة", h:"الأسرة"},{w:"رجل", h:"ذكر بالغ"},{w:"امرأة", h:"أنثى بالغة"},{w:"طفل", h:"صغير في السن"},{w:"أخ", h:"شقيق"},{w:"أخت", h:"شقيقة"},{w:"جد", h:"والد الأب أو الأم"},{w:"جدة", h:"والدة الأب أو الأم"},{w:"عم", h:"أخو الأب"},{w:"عمة", h:"أخت الأب"},{w:"خال", h:"أخو الأم"},{w:"خالة", h:"أخت الأم"},{w:"صديق", h:"رفيق"},{w:"جار", h:"يسكن بقربك"},{w:"حفيد", h:"ابن الابن أو البنت"},{w:"أب", h:"الوالد"},{w:"أم", h:"الوالدة"},
             // أجزاء الجسم
-            {w:"رأس", h:"أعلى الجسم"},{w:"عين", h:"حاسة البصر"},{w:"أذن", h:"حاسة السمع"},{w:"أنف", h:"حاسة الشم"},{w:"فم", h:"للكلام والأكل"},{w:"وجه", h:"مقدمة الرأس"},{w:"شعر", h:"يغطي الرأس"},{w:"عنق", h:"يربط الرأس بالجسم"},{w:"يد", h:"طرف علوي"},{w:"قدم", h:"طرف سفلي"},{w:"قلب", h:"عضو نابض"},{w:"دم", h:"سائل أحمر"},{w:"عظم", h:"هيكل صلب"},{w:"عضلة", h:"للحركة"},
+            {w:"رأس", h:"أعلى الجسم"},{w:"عين", h:"حاسة البصر"},{w:"أذن", h:"حاسة السمع"},{w:"أنف", h:"حاسة الشم"},{w:"فم", h:"للكلام والأكل"},{w:"وجه", h:"مقدمة الرأس"},{w:"شعر", h:"يغطي الرأس"},{w:"عنق", h:"يربط الرأس بالجسم"},{w:"يد", h:"طرف علوي"},{w:"قدم", h:"طرف سفلي"},{w:"قلب", h:"عضو نابض"},{w:"دم", h:"سائل أحمر"},{w:"عظم", h:"هيكل صلب"},{w:"عضلة", h:"للحركة"},{w:"كبد", h:"غدة أساسية"},{w:"كلية", h:"تصفي الدم"},{w:"معدة", h:"تهضم الطعام"},{w:"رئة", h:"للتنفس"},{w:"وريد", h:"ينقل الدم"},{w:"جمجمة", h:"تحمي الدماغ"},{w:"لسان", h:"عضو التذوق"},{w:"شفة", h:"إطار الفم"},{w:"إصبع", h:"في اليد أو القدم"},
             // مشاعر وحالات
-            {w:"فرح", h:"سعادة"},{w:"حزن", h:"أسى"},{w:"غضب", h:"انفعال شديد"},{w:"خوف", h:"ذعر"},{w:"حب", h:"عاطفة قوية"},{w:"كره", h:"مقت"},{w:"أمل", h:"تفاؤل"},{w:"يأس", h:"فقدان الأمل"},{w:"سلام", h:"طمأنينة"},{w:"حرب", h:"صراع مسلح"},
+            {w:"فرح", h:"سعادة"},{w:"حزن", h:"أسى"},{w:"غضب", h:"انفعال شديد"},{w:"خوف", h:"ذعر"},{w:"حب", h:"عاطفة قوية"},{w:"كره", h:"مقت"},{w:"أمل", h:"تفاؤل"},{w:"يأس", h:"فقدان الأمل"},{w:"سلام", h:"طمأنينة"},{w:"حرب", h:"صراع مسلح"},{w:"حياة", h:"نقيض الموت"},{w:"موت", h:"نهاية الحياة"},{w:"صدق", h:"قول الحق"},{w:"كذب", h:"عكس الصدق"},
             // فضاء وعلوم
             {w:"فضاء", h:"الكون الواسع"},{w:"كوكب", h:"جرم سماوي"},{w:"نجم", h:"جرم مضيء"},{w:"مجرة", h:"تجمع نجوم"},{w:"صاروخ", h:"مركبة فضائية"},{w:"نيزك", h:"صخرة فضائية"},{w:"مذنب", h:"جرم ذو ذيل"},{w:"رائد", h:"مستكشف الفضاء"},{w:"علم", h:"معرفة"},
             // رياضة وحركة
             {w:"رياضة", h:"نشاط بدني"},{w:"كرة", h:"جسم دائري للعب"},{w:"ملعب", h:"مكان المباراة"},{w:"هدف", h:"نقطة فوز"},{w:"سباحة", h:"حركة في الماء"},{w:"ركض", h:"جري سريع"},{w:"قفز", h:"وثب"},
+            // جغرافيا ودول
+            {w:"قارة", h:"مساحة يابسة ضخمة"},{w:"مدينة", h:"تجمع سكاني كبير"},{w:"قرية", h:"تجمع سكاني صغير"},{w:"شارع", h:"طريق معبد"},{w:"طريق", h:"ممر للسيارات"},{w:"جسر", h:"يعبر فوق الماء"},{w:"نفق", h:"ممر تحت الأرض"},{w:"أردن", h:"دولة عربية"},{w:"أمريكا", h:"دولة عظمى"},{w:"إسبانيا", h:"دولة أوروبية"},{w:"إيطاليا", h:"عاصمتها روما"},
             // وسائل النقل
             {w:"سيارة", h:"مركبة بأربع عجلات"},{w:"قطار", h:"على السكة"},{w:"طائرة", h:"في الجو"},{w:"سفينة", h:"في البحر"},{w:"قارب", h:"مركبة مائية صغيرة"},{w:"دراجة", h:"بعجلتين"},{w:"حافلة", h:"نقل جماعي"},{w:"شاحنة", h:"لنقل البضائع"}
         ];
 
+        /* --- Normalization function for Alef --- */
+        function norm(str) {
+            if(!str) return "";
+            return str.replace(/[أإآ]/g, 'ا');
+        }
+
         /* --- Game State --- */
-        // تحديث متغير التخزين لعدم تداخل البيانات السابقة
-        let stats = JSON.parse(localStorage.getItem('khamenha_pro_final_v4')) || { points: 0, streak: 0, wins: 0 };
-        let settings = JSON.parse(localStorage.getItem('khamenha_set_final_v4')) || { sound: true, dark: true };
+        let stats = JSON.parse(localStorage.getItem('khamenha_pro_v6')) || { points: 0, streak: 0, wins: 0 };
+        let settings = JSON.parse(localStorage.getItem('khamenha_set_v6')) || { sound: true, dark: true };
         
         let targetWord = ""; let hint = "";
         let currentGuess = []; let currentRow = 0; let maxAttempts = 5;
         let gameActive = false; let locked = []; 
         let discoveredPositions = []; 
 
-        /* --- Synthesizer Audio --- */
+        /* --- Audio --- */
         const ACtx = window.AudioContext || window.webkitAudioContext;
         let audioCtx;
         function playSfx(type) {
@@ -497,6 +581,10 @@
                     osc.frequency.setValueAtTime(1200, t); osc.frequency.setValueAtTime(1800, t+0.1); osc.type = 'sine'; 
                     gain.gain.setValueAtTime(0.1, t); gain.gain.linearRampToValueAtTime(0, t+0.3); 
                     osc.start(t); osc.stop(t+0.3); 
+                } else if (type === 'dup') {
+                    osc.frequency.setValueAtTime(1500, t); osc.frequency.exponentialRampToValueAtTime(2000, t+0.15); osc.type = 'sine'; 
+                    gain.gain.setValueAtTime(0.1, t); gain.gain.linearRampToValueAtTime(0, t+0.15); 
+                    osc.start(t); osc.stop(t+0.15); 
                 }
             } catch(e) {}
         }
@@ -508,7 +596,10 @@
             buildKeyboard();
             
             document.querySelectorAll('.overlay').forEach(el => {
-                el.addEventListener('click', e => { if(e.target===el && el.id==='settings-overlay') closeSettings(); });
+                el.addEventListener('click', e => { 
+                    if(e.target===el && el.id==='settings-overlay') closeSettings(); 
+                    if(e.target===el && el.id==='help-overlay') closeHelp(); 
+                });
             });
         }
 
@@ -517,7 +608,7 @@
             document.getElementById('menu-streak').innerText = stats.streak;
             document.getElementById('game-points').innerText = stats.points;
         }
-        function saveStats() { localStorage.setItem('khamenha_pro_final_v4', JSON.stringify(stats)); updateMenu(); }
+        function saveStats() { localStorage.setItem('khamenha_pro_v6', JSON.stringify(stats)); updateMenu(); }
 
         /* --- Core Game Flow --- */
         function startGame() {
@@ -630,17 +721,21 @@
         function check(g) {
             gameActive = false;
             let tiles = document.getElementById(`row-${currentRow}`).querySelectorAll('.tile');
-            let tArr = targetWord.split(''); let res = Array(targetWord.length).fill('absent');
+            
+            // Normalized versions for comparison
+            let normT = norm(targetWord);
+            let normG = norm(g);
+            let tArr = normT.split(''); 
+            let res = Array(targetWord.length).fill('absent');
             
             let ptsThisTurn = 0;
 
             // حساب الحروف الخضراء
             for(let i=0; i<targetWord.length; i++) {
-                if(g[i]===targetWord[i]) { 
-                    res[i]='correct'; 
-                    tArr[i]=null; 
+                if(normG[i] === normT[i]) { 
+                    res[i] = 'correct'; 
+                    tArr[i] = null; 
                     
-                    // مكافأة الحرف الجديد (مخفضة لنقطة واحدة فقط) لزيادة الصعوبة
                     if(!locked.includes(i) && !discoveredPositions.includes(i)) { 
                         ptsThisTurn += 1; 
                         discoveredPositions.push(i); 
@@ -649,23 +744,37 @@
             }
             // حساب الحروف الصفراء
             for(let i=0; i<targetWord.length; i++) {
-                if(res[i]==='absent' && tArr.includes(g[i])) { res[i]='present'; tArr[tArr.indexOf(g[i])]=null; }
+                if(res[i] === 'absent' && tArr.includes(normG[i])) { 
+                    res[i] = 'present'; 
+                    tArr[tArr.indexOf(normG[i])] = null; 
+                }
             }
 
             tiles.forEach((t, i) => {
                 setTimeout(() => {
-                    t.querySelector('.tile-back').innerText = g[i];
+                    // إذا كان الحرف صحيح، نعرض الحرف كما هو بالكلمة الأصلية (مثال أ أو إ)، وإلا نعرض ما كتبه المستخدم
+                    let displayChar = (res[i] === 'correct') ? targetWord[i] : g[i];
+                    t.querySelector('.tile-back').innerText = displayChar;
                     t.querySelector('.tile-back').classList.add(res[i]);
                     t.classList.add('flip'); playSfx('flip');
                     
-                    let k = document.getElementById(`key-${g[i]}`);
+                    let k = document.getElementById(`key-${norm(g[i])}`);
                     if(k) {
                         if(res[i]==='correct') { k.classList.remove('present','absent'); k.classList.add('correct'); }
                         else if(res[i]==='present' && !k.classList.contains('correct')) { k.classList.remove('absent'); k.classList.add('present'); }
                         else if(res[i]==='absent' && !k.classList.contains('correct') && !k.classList.contains('present')) k.classList.add('absent');
+                        
+                        // فحص إذا الحرف مكرر بالكلمة وإضافة النقطة الزرقاء
+                        let countInTarget = normT.split(normG[i]).length - 1;
+                        if(countInTarget >= 2 && res[i] !== 'absent') {
+                            if(!k.classList.contains('duplicate')) {
+                                k.classList.add('duplicate');
+                                setTimeout(() => playSfx('dup'), 100);
+                            }
+                        }
                     }
 
-                    if(i === targetWord.length-1) setTimeout(()=> endTurn(ptsThisTurn, g===targetWord), 400);
+                    if(i === targetWord.length-1) setTimeout(()=> endTurn(ptsThisTurn, normG === normT), 400);
                 }, i * 200);
             });
         }
@@ -705,20 +814,20 @@
             fs.style.left = `${rect.left + (rect.width / 2) - 15}px`;
             fs.style.top = `${rect.top}px`;
             document.body.appendChild(fs);
-            setTimeout(() => fs.remove(), 1200);
+            setTimeout(() => fs.remove(), 1500);
         }
 
         function showStageCombo(c) {
             let txt = "فوز متتالي!"; let col = "#fbbf24";
             if(c>=3){ txt="بطل اللعبة!"; col="#ef4444"; document.body.classList.add('screen-shake'); setTimeout(()=>document.body.classList.remove('screen-shake'),400); }
             let d = document.getElementById('combo-display');
-            d.innerText = `${txt}\nمراحل x${c}`; d.style.color = col; d.style.textAlign = 'center';
+            d.innerText = `${txt}\nمراحل x${c}`; d.style.color = col;
             d.style.animation = 'none'; void d.offsetWidth; d.style.animation = 'blast 1.8s ease forwards';
         }
 
         function toast(m) {
             let t = document.getElementById('toast'); t.innerText = m; t.classList.add('show');
-            setTimeout(()=> t.classList.remove('show'), 2000);
+            setTimeout(()=> t.classList.remove('show'), 2500);
         }
 
         function confetti() {
@@ -738,16 +847,12 @@
         function winGame() {
             playSfx('win'); stats.wins++; stats.streak++; confetti();
             
-            // الكومبو يعتمد على سلسلة الانتصارات (عدد المراحل المتتالية)
-            if(stats.streak > 1) {
-                showStageCombo(stats.streak);
-            }
+            if(stats.streak > 1) { showStageCombo(stats.streak); }
 
-            // مكافأة الفوز = أساسي (2 نقاط) + نقاط للمحاولات المتبقية (2) + مكافأة الكومبو (2 * سلسلة الفوز)
-            let baseWin = 2;
-            let attemptsBonus = (maxAttempts - currentRow - 1) * 2;
+            // 10 نقاط من أول 3 محاولات (0, 1, 2) و 5 لآخر محاولتين (3, 4 وأكثر)
+            let baseWin = (currentRow < 3) ? 10 : 5;
             let comboBonus = stats.streak > 1 ? (stats.streak * 2) : 0;
-            let totalWinPoints = baseWin + attemptsBonus + comboBonus;
+            let totalWinPoints = baseWin + comboBonus;
 
             stats.points += totalWinPoints; saveStats(); updateShop();
             if(totalWinPoints > 0) setTimeout(() => showFloatingPoints(totalWinPoints), 500);
@@ -760,7 +865,7 @@
                 document.getElementById('end-earned').innerText = `+${totalWinPoints}`;
                 document.getElementById('end-combo').innerText = `x${stats.streak}`;
                 document.getElementById('end-overlay').classList.add('active');
-            }, 1200); // تأخير قليل ليظهر الكومبو بوضوح
+            }, 1200);
         }
 
         function loseGame() {
@@ -776,7 +881,7 @@
             }, 1000);
         }
 
-        /* --- Shop (أسعار مرتفعة) --- */
+        /* --- Shop --- */
         function updateShop() {
             const items = [{id:'shop-hint',c:25},{id:'shop-reveal',c:35},{id:'shop-extra',c:50},{id:'shop-remove',c:40}];
             items.forEach(i => {
@@ -788,15 +893,24 @@
             if(!gameActive || stats.points < c) return;
             if(t==='hint'){ toast(`تلميح: ${hint}`); playSfx('coin'); }
             else if(t==='reveal'){
-                let av = []; for(let i=0; i<targetWord.length; i++) if(!locked.includes(i) && currentGuess[i]!==targetWord[i]) av.push(i);
+                let av = []; for(let i=0; i<targetWord.length; i++) if(!locked.includes(i) && norm(currentGuess[i]) !== norm(targetWord[i])) av.push(i);
                 if(av.length===0){ toast("كل الحروف مكشوفة!"); return; }
                 let r = av[Math.floor(Math.random()*av.length)]; 
-                locked.push(r); discoveredPositions.push(r); // لا نأخذ نقطة مجانية
+                locked.push(r); discoveredPositions.push(r); 
                 
                 let tile = document.getElementById(`row-${currentRow}`).querySelectorAll('.tile')[r];
                 tile.querySelector('.tile-front').innerText = targetWord[r];
                 tile.querySelector('.tile-front').style.color = 'var(--correct)';
-                let k = document.getElementById(`key-${targetWord[r]}`); if(k) k.classList.add('correct');
+                
+                let k = document.getElementById(`key-${norm(targetWord[r])}`); 
+                if(k) {
+                    k.classList.add('correct');
+                    let countInTarget = norm(targetWord).split(norm(targetWord[r])).length - 1;
+                    if(countInTarget >= 2 && !k.classList.contains('duplicate')) {
+                        k.classList.add('duplicate');
+                        setTimeout(() => playSfx('dup'), 100);
+                    }
+                }
                 toast("تم كشف حرف!"); playSfx('coin');
             }
             else if(t==='extra'){
@@ -804,22 +918,34 @@
                 let r = document.createElement('div'); r.className='row'; r.id=`row-${maxAttempts-1}`;
                 for(let j=0; j<targetWord.length; j++) r.innerHTML += `<div class="tile"><div class="tile-face tile-front"></div><div class="tile-face tile-back"></div></div>`;
                 document.getElementById('board').appendChild(r); toast("تم إضافة محاولة!"); playSfx('coin');
+                
+                // Scroll to bottom so new row is visible
+                let boardContainer = document.getElementById('board-container');
+                setTimeout(() => { boardContainer.scrollTop = boardContainer.scrollHeight; }, 100);
             }
             else if(t==='remove'){
                 let rm=0;
+                let normTargetStr = norm(targetWord);
                 document.querySelectorAll('.key').forEach(k=>{
-                    let l=k.innerText; if(l.length===1 && !targetWord.includes(l) && !k.classList.contains('absent') && rm<3){ k.classList.add('hidden'); rm++; }
+                    let l=k.innerText; 
+                    if(l.length===1 && !normTargetStr.includes(l) && !k.classList.contains('absent') && rm<3){ 
+                        k.classList.add('hidden'); rm++; 
+                    }
                 });
                 toast("تم حذف أحرف خاطئة!"); playSfx('coin');
             }
             stats.points -= c; saveStats(); updateShop();
         }
 
-        /* --- Settings --- */
+        /* --- Settings & Help --- */
         function openSettings(){ document.getElementById('settings-overlay').classList.add('active'); updateSetUI(); }
         function closeSettings(){ document.getElementById('settings-overlay').classList.remove('active'); }
-        function toggleTheme(){ settings.dark = !settings.dark; applyTheme(); localStorage.setItem('khamenha_set_final_v4', JSON.stringify(settings)); }
-        function toggleSound(){ settings.sound = !settings.sound; updateSetUI(); localStorage.setItem('khamenha_set_final_v4', JSON.stringify(settings)); }
+        
+        function openHelp(){ document.getElementById('help-overlay').classList.add('active'); }
+        function closeHelp(){ document.getElementById('help-overlay').classList.remove('active'); }
+
+        function toggleTheme(){ settings.dark = !settings.dark; applyTheme(); localStorage.setItem('khamenha_set_v6', JSON.stringify(settings)); }
+        function toggleSound(){ settings.sound = !settings.sound; updateSetUI(); localStorage.setItem('khamenha_set_v6', JSON.stringify(settings)); }
         function applyTheme(){ if(settings.dark) document.body.classList.remove('light-theme'); else document.body.classList.add('light-theme'); updateSetUI(); }
         function updateSetUI(){
             document.getElementById('btn-theme').innerText = settings.dark ? "🌙 المظهر (داكن)" : "☀️ المظهر (فاتح)";
