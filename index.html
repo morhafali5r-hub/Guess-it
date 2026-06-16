@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>خمنها | النسخة الاحترافية 3D (النهائية V4)</title>
+    <title>خمنها</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* ==========================================
@@ -131,7 +131,7 @@
         .stat-card p { font-size: 1rem; color: var(--text-muted); font-weight: 800; }
 
         /* ==========================================
-           5. GAME UI (HEADER & SHOP)
+           5. GAME UI (HEADER, SHOP & HINT)
         ========================================== */
         #game-view { display: none; flex-direction: column; height: 100dvh; }
 
@@ -166,6 +166,29 @@
         .shop-icon { font-size: 1.8rem; margin-bottom: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
         .shop-name { font-size: 0.8rem; font-weight: 800; color: var(--text-main); }
         .shop-price { font-size: 0.9rem; font-weight: 900; color: #fbbf24; margin-top: 4px; }
+
+        /* Persistent Hint Styling */
+        .persistent-hint {
+            display: none;
+            text-align: center;
+            background: var(--shop-bg);
+            color: var(--text-main);
+            padding: 0.8rem 1rem;
+            margin: 15px auto 0;
+            border-radius: 12px;
+            border: 2px solid var(--present);
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+            max-width: 90%;
+            z-index: 10;
+            animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .persistent-hint span { color: #fbbf24; }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 
         /* ==========================================
            6. 3D GAME BOARD
@@ -358,6 +381,9 @@
             </div>
         </div>
 
+        <!-- Persistent Hint Display -->
+        <div id="persistent-hint" class="persistent-hint"></div>
+
         <!-- 3D Board -->
         <div class="board-wrapper" id="board-container">
             <div class="board" id="board"></div>
@@ -450,7 +476,6 @@
         ];
 
         /* --- Game State --- */
-        // تحديث متغير التخزين لعدم تداخل البيانات السابقة
         let stats = JSON.parse(localStorage.getItem('khamenha_pro_final_v4')) || { points: 0, streak: 0, wins: 0 };
         let settings = JSON.parse(localStorage.getItem('khamenha_set_final_v4')) || { sound: true, dark: true };
         
@@ -458,6 +483,7 @@
         let currentGuess = []; let currentRow = 0; let maxAttempts = 6;
         let gameActive = false; let locked = []; 
         let discoveredPositions = []; 
+        let hintBought = false; // متغير جديد لمعرفة إذا تم شراء التلميح في الجولة الحالية
 
         /* --- Synthesizer Audio --- */
         const ACtx = window.AudioContext || window.webkitAudioContext;
@@ -531,6 +557,10 @@
                 
                 currentGuess = []; currentRow = 0; maxAttempts = 6;
                 locked = []; discoveredPositions = []; gameActive = true;
+                hintBought = false; // تصفير التلميح في الجولة الجديدة
+                
+                // إخفاء مربع التلميح الدائم
+                document.getElementById('persistent-hint').style.display = 'none';
                 
                 resetKb(); buildBoard(); updateShop();
                 
@@ -640,7 +670,6 @@
                     res[i]='correct'; 
                     tArr[i]=null; 
                     
-                    // مكافأة الحرف الجديد (مخفضة لنقطة واحدة فقط) لزيادة الصعوبة
                     if(!locked.includes(i) && !discoveredPositions.includes(i)) { 
                         ptsThisTurn += 1; 
                         discoveredPositions.push(i); 
@@ -738,12 +767,10 @@
         function winGame() {
             playSfx('win'); stats.wins++; stats.streak++; confetti();
             
-            // الكومبو يعتمد على سلسلة الانتصارات (عدد المراحل المتتالية)
             if(stats.streak > 1) {
                 showStageCombo(stats.streak);
             }
 
-            // مكافأة الفوز = أساسي (2 نقاط) + نقاط للمحاولات المتبقية (2) + مكافأة الكومبو (2 * سلسلة الفوز)
             let baseWin = 2;
             let attemptsBonus = (maxAttempts - currentRow - 1) * 2;
             let comboBonus = stats.streak > 1 ? (stats.streak * 2) : 0;
@@ -760,7 +787,7 @@
                 document.getElementById('end-earned').innerText = `+${totalWinPoints}`;
                 document.getElementById('end-combo').innerText = `x${stats.streak}`;
                 document.getElementById('end-overlay').classList.add('active');
-            }, 1200); // تأخير قليل ليظهر الكومبو بوضوح
+            }, 1200);
         }
 
         function loseGame() {
@@ -776,22 +803,37 @@
             }, 1000);
         }
 
-        /* --- Shop (أسعار مرتفعة) --- */
+        /* --- Shop --- */
         function updateShop() {
             const items = [{id:'shop-hint',c:15},{id:'shop-reveal',c:20},{id:'shop-extra',c:30},{id:'shop-remove',c:25}];
             items.forEach(i => {
                 let el = document.getElementById(i.id);
-                if(stats.points < i.c) el.classList.add('locked'); else el.classList.remove('locked');
+                // قفل الزر إذا مافي نقاط، أو إذا كان الزر هو التلميح وتم شراؤه مسبقاً
+                if(stats.points < i.c || (i.id === 'shop-hint' && hintBought)) {
+                    el.classList.add('locked');
+                } else {
+                    el.classList.remove('locked');
+                }
             });
         }
+
         function buyItem(t, c) {
-            if(!gameActive || stats.points < c) return;
-            if(t==='hint'){ toast(`تلميح: ${hint}`); playSfx('coin'); }
-            else if(t==='reveal'){
+            // منع الشراء إذا اللعبة متوقفة أو النقاط ما بتكفي
+            // وإضافة شرط لمنع شراء التلميح مرة ثانية
+            if(!gameActive || stats.points < c || (t === 'hint' && hintBought)) return;
+            
+            if(t === 'hint') { 
+                hintBought = true; // تسجيل عملية الشراء
+                let pHint = document.getElementById('persistent-hint');
+                pHint.innerHTML = `💡 تلميح: <span>${hint}</span>`;
+                pHint.style.display = 'block'; // إظهار المربع الدائم
+                playSfx('coin'); 
+            }
+            else if(t === 'reveal') {
                 let av = []; for(let i=0; i<targetWord.length; i++) if(!locked.includes(i) && currentGuess[i]!==targetWord[i]) av.push(i);
                 if(av.length===0){ toast("كل الحروف مكشوفة!"); return; }
                 let r = av[Math.floor(Math.random()*av.length)]; 
-                locked.push(r); discoveredPositions.push(r); // لا نأخذ نقطة مجانية
+                locked.push(r); discoveredPositions.push(r); 
                 
                 let tile = document.getElementById(`row-${currentRow}`).querySelectorAll('.tile')[r];
                 tile.querySelector('.tile-front').innerText = targetWord[r];
@@ -799,20 +841,23 @@
                 let k = document.getElementById(`key-${targetWord[r]}`); if(k) k.classList.add('correct');
                 toast("تم كشف حرف!"); playSfx('coin');
             }
-            else if(t==='extra'){
+            else if(t === 'extra') {
                 maxAttempts++;
                 let r = document.createElement('div'); r.className='row'; r.id=`row-${maxAttempts-1}`;
                 for(let j=0; j<targetWord.length; j++) r.innerHTML += `<div class="tile"><div class="tile-face tile-front"></div><div class="tile-face tile-back"></div></div>`;
                 document.getElementById('board').appendChild(r); toast("تم إضافة محاولة!"); playSfx('coin');
             }
-            else if(t==='remove'){
+            else if(t === 'remove') {
                 let rm=0;
                 document.querySelectorAll('.key').forEach(k=>{
                     let l=k.innerText; if(l.length===1 && !targetWord.includes(l) && !k.classList.contains('absent') && rm<3){ k.classList.add('hidden'); rm++; }
                 });
                 toast("تم حذف أحرف خاطئة!"); playSfx('coin');
             }
-            stats.points -= c; saveStats(); updateShop();
+            
+            stats.points -= c; 
+            saveStats(); 
+            updateShop();
         }
 
         /* --- Settings --- */
